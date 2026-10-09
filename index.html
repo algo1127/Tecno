@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 10 · Estándares IEEE 802.3 / 802.11 / 802.15 | NetStandards Consulting</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/space-grotesk@latest/index.css">
+<style>
+:root{
+  --bg:#f2f6fb; --ink:#0d1b2a; --soft:#51637a; --card:#ffffff;
+  --azul:#1f6fb2; --azul-osc:#0e3a5d; --azul-med:#155a92;
+  --naranja:#f2a33c; --teal:#12b5a5; --bt:#4da3ff;
+  --line:#dce6f2; --ok:#1a9e6e; --bad:#d64545;
+  --shadow:0 10px 30px rgba(14,58,93,.12);
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+h1,h2,h3,h4,.brand-name{font-family:'Space Grotesk',sans-serif}
+img,svg{max-width:100%;display:block}
+a{color:var(--azul)}
+
+/* ---------- BARRA SUPERIOR ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,#0b2a44,#123f6b 60%,#155a92);box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.topbar-inner{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.brand-badge{width:38px;height:38px;border-radius:50%;background:var(--naranja);color:#0b2a44;font-weight:800;display:grid;place-items:center;font-family:'Space Grotesk';border:3px solid #fff;box-shadow:0 0 0 3px var(--naranja)}
+.brand-name{font-weight:700;font-size:1.05rem;letter-spacing:.3px}
+.brand-sub{display:block;font-size:.68rem;color:#bcd6ea;font-weight:400;letter-spacing:.12em;text-transform:uppercase}
+.mainnav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;overflow-x:auto;max-width:100%}
+.nav-link{color:#dbe9f5;text-decoration:none;font-size:.86rem;font-weight:600;padding:8px 14px;border-radius:999px;white-space:nowrap;transition:.25s}
+.nav-link:hover{background:rgba(255,255,255,.14);color:#fff;transform:translateY(-1px)}
+.nav-link.active{background:var(--naranja);color:#0b2a44}
+.btn-pdf{background:transparent;border:2px solid var(--naranja);color:var(--naranja);font-weight:700;font-size:.8rem;padding:7px 14px;border-radius:999px;cursor:pointer;transition:.25s;font-family:'Inter'}
+.btn-pdf:hover{background:var(--naranja);color:#0b2a44}
+
+/* ---------- ESTRUCTURA DE PÁGINAS ---------- */
+main{max-width:1180px;margin:0 auto;padding:34px 20px 60px}
+.page{display:none}
+.page.active{display:block;animation:pageIn .45s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.section{margin-top:44px}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--azul);background:#e3eef8;border:1px solid #c9dcee;padding:5px 12px;border-radius:999px}
+.kicker .dot{width:8px;height:8px;border-radius:50%;background:var(--naranja)}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.15;margin:14px 0 10px;color:var(--azul-osc)}
+h2{font-size:clamp(1.35rem,3vw,1.9rem);color:var(--azul-osc);margin:10px 0 14px}
+h3{font-size:1.08rem;color:var(--azul-med);margin-bottom:8px}
+p.lead{font-size:1.02rem;color:var(--soft);max-width:70ch}
+p{margin-bottom:.7em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 38px rgba(14,58,93,.18)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center}
+.hero-art{border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.btn{border:none;cursor:pointer;font-family:'Inter';font-weight:700;font-size:.9rem;padding:12px 22px;border-radius:12px;transition:.25s;text-decoration:none;display:inline-block}
+.btn-primary{background:var(--azul);color:#fff;box-shadow:0 6px 16px rgba(31,111,178,.35)}
+.btn-primary:hover{background:var(--azul-med);transform:translateY(-2px)}
+.btn-accent{background:var(--naranja);color:#0b2a44;box-shadow:0 6px 16px rgba(242,163,60,.35)}
+.btn-accent:hover{filter:brightness(1.06);transform:translateY(-2px)}
+.btn-ghost{background:#fff;color:var(--azul-med);border:2px solid #c9dcee}
+.btn-ghost:hover{border-color:var(--azul);background:#eef5fb}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:26px}
+.stat{background:#fff;border:1px solid var(--line);border-left:5px solid var(--naranja);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-family:'Space Grotesk';font-size:1.35rem;color:var(--azul-osc)}
+.stat span{font-size:.78rem;color:var(--soft)}
+.icon-chip{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.35rem;margin-bottom:12px;color:#fff}
+.chip-eth{background:linear-gradient(135deg,#1f6fb2,#0e3a5d)}
+.chip-wlan{background:linear-gradient(135deg,#f2a33c,#d97b16)}
+.chip-bt{background:linear-gradient(135deg,#4da3ff,#2461c7)}
+.chip-cmp{background:linear-gradient(135deg,#12b5a5,#0b7f74)}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;padding:3px 10px;border-radius:999px;background:#e3eef8;color:var(--azul-med);margin-right:6px}
+.note{background:#fff8ec;border:1px solid #f3d9a8;border-left:5px solid var(--naranja);border-radius:12px;padding:14px 18px;font-size:.92rem}
+.note b{color:#8a5a10}
+.note-blue{background:#eef5fb;border:1px solid #c9dcee;border-left:5px solid var(--azul);border-radius:12px;padding:14px 18px;font-size:.92rem}
+
+/* ---------- TABLAS ---------- */
+.table-scroll{overflow-x:auto;border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--line);background:#fff}
+table{width:100%;border-collapse:collapse;min-width:640px;font-size:.9rem}
+thead th{background:var(--azul-osc);color:#fff;text-align:left;padding:13px 16px;font-family:'Space Grotesk';font-size:.82rem;letter-spacing:.05em;text-transform:uppercase}
+tbody td{padding:12px 16px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:#f6fafd}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:#eaf3fb}
+td.hl{font-weight:700;color:var(--azul-med)}
+
+/* ---------- SIMULADORES ---------- */
+.sim-box{background:#0b2a44;border-radius:18px;padding:22px;box-shadow:var(--shadow);color:#dbe9f5}
+.sim-box h3{color:#fff}
+.sim-box h3 small{color:#8fb8d8;font-weight:400}
+.stage{position:relative;height:200px;background:linear-gradient(180deg,#0e3a5d,#123f6b);border-radius:14px;border:1px solid #1d5c8f;overflow:hidden;margin:14px 0 10px}
+.medium{position:absolute;left:9%;right:9%;top:50%;height:6px;transform:translateY(-50%);background:linear-gradient(90deg,#2fd4c0,#4da3ff,#2fd4c0);border-radius:99px;opacity:.85}
+.stage.collision .medium{animation:flashRed .5s ease 3}
+@keyframes flashRed{50%{background:#ff5a5a;box-shadow:0 0 22px #ff5a5a}}
+.node{position:absolute;top:50%;transform:translateY(-50%);text-align:center;z-index:3}
+.node small{display:block;font-size:.7rem;color:#9fc6e4;margin-top:4px}
+.node-dot{width:46px;height:46px;border-radius:50%;background:#123f6b;border:3px solid #2fd4c0;color:#fff;display:grid;place-items:center;font-weight:800;font-family:'Space Grotesk';margin:0 auto;transition:.3s}
+.node-a{left:2%}.node-b{right:2%}
+.stage.listening .node-dot{animation:pulse 1s ease infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 12px rgba(47,212,192,.18)}}
+.packet{position:absolute;top:50%;width:26px;height:26px;border-radius:50%;transform:translate(-50%,-50%);display:grid;place-items:center;font-size:.68rem;font-weight:800;color:#0b2a44;opacity:0;z-index:4}
+.pk-a{left:9%;background:var(--naranja);box-shadow:0 0 14px rgba(242,163,60,.8)}
+.pk-b{left:91%;background:#2fd4c0;box-shadow:0 0 14px rgba(47,212,192,.8)}
+.packet.show{opacity:1}
+.burst{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.2);font-size:44px;opacity:0;z-index:5;transition:.25s}
+.burst.show{opacity:1;transform:translate(-50%,-50%) scale(1);animation:shake .4s ease}
+@keyframes shake{25%{margin-left:-6px}75%{margin-left:6px}}
+.caption{background:#123f6b;border:1px solid #1d5c8f;border-radius:10px;padding:10px 14px;font-size:.9rem;min-height:44px;color:#ffe9c4}
+.sim-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.sim-controls .btn{padding:10px 18px;font-size:.84rem}
+.backoff{margin-top:12px;display:grid;gap:8px}
+.bo-row{display:flex;align-items:center;gap:10px;font-size:.8rem}
+.bo-row label{width:74px;color:#9fc6e4}
+.bo-bar{flex:1;max-width:340px;height:10px;background:#123f6b;border-radius:99px;overflow:hidden}
+.bo-bar i{display:block;height:100%;width:0;border-radius:99px;background:var(--naranja);transition:width 1.1s ease}
+.bo-row b{color:#ffe9c4;font-size:.78rem;min-width:44px}
+
+/* FHSS */
+.fhss-devices{display:flex;justify-content:center;align-items:center;gap:14px;font-size:1.7rem;margin-bottom:8px}
+.fhss-link{font-size:1.1rem;color:#2fd4c0;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.fhss-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;align-items:end;height:110px;margin:10px 0}
+.fhss-bar{background:#123f6b;border:1px solid #1d5c8f;border-radius:8px 8px 4px 4px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;transition:.2s;position:relative}
+.fhss-bar span{font-size:.62rem;text-align:center;color:#7fa9c9;padding-bottom:4px}
+.fhss-bar.on{background:linear-gradient(180deg,#f2a33c,#d97b16);border-color:#ffd79a;box-shadow:0 0 18px rgba(242,163,60,.55);transform:scaleY(1.04)}
+.fhss-bar.on span{color:#0b2a44;font-weight:800}
+.readout{text-align:center;font-family:'Space Grotesk';color:#ffe9c4;font-size:.95rem;min-height:26px}
+
+/* Bandas Wi-Fi */
+.band-stage{position:relative;height:230px;background:linear-gradient(180deg,#0e3a5d,#123f6b);border-radius:14px;overflow:hidden;display:grid;place-items:center}
+.coverage{position:absolute;border-radius:50%;transition:width .7s ease,height .7s ease,background .7s ease;width:210px;height:210px;background:radial-gradient(circle,rgba(242,163,60,.4),rgba(242,163,60,.06) 70%);border:2px dashed rgba(242,163,60,.7)}
+.ap-dot{position:relative;z-index:2;width:56px;height:56px;border-radius:50%;background:var(--naranja);color:#0b2a44;display:grid;place-items:center;font-weight:800;font-family:'Space Grotesk';box-shadow:0 0 24px rgba(242,163,60,.7)}
+.band-meter{display:flex;align-items:center;gap:10px;font-size:.82rem;margin-top:8px;color:#dbe9f5}
+.band-meter .bo-bar{background:#123f6b}
+#speedFill{background:linear-gradient(90deg,#2fd4c0,#4da3ff)}
+#covFill{background:linear-gradient(90deg,#f2a33c,#ffd79a)}
+.chip-row{display:flex;gap:10px;margin:10px 0}
+.chip{border:2px solid #1d5c8f;background:#123f6b;color:#dbe9f5;font-family:'Inter';font-weight:700;font-size:.82rem;padding:8px 18px;border-radius:999px;cursor:pointer;transition:.25s}
+.chip:hover{border-color:#2fd4c0}
+.chip.active{background:var(--naranja);border-color:var(--naranja);color:#0b2a44}
+
+/* Seguridad Wi-Fi */
+.sec-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sec-btn{border:none;cursor:pointer;font-family:'Inter';border-radius:12px;padding:14px 8px;background:#eef5fb;border:2px solid #c9dcee;transition:.25s;text-align:center}
+.sec-btn b{display:block;font-family:'Space Grotesk';font-size:1rem;color:var(--azul-osc)}
+.sec-btn span{font-size:.72rem;color:var(--soft)}
+.sec-btn:hover{transform:translateY(-3px);border-color:var(--azul)}
+.sec-btn.active{background:var(--azul-osc);border-color:var(--azul-osc)}
+.sec-btn.active b,.sec-btn.active span{color:#fff}
+.sec-detail{margin-top:14px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:12px;padding:16px 20px;min-height:96px}
+.sec-detail h4{color:var(--azul-osc);margin-bottom:4px}
+
+/* Test */
+.quiz-q{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);transition:.25s}
+.quiz-q h4{font-size:.98rem;color:var(--azul-osc);margin-bottom:10px}
+.quiz-q .qnum{color:var(--naranja);font-family:'Space Grotesk'}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:2px solid transparent;border-radius:10px;cursor:pointer;font-size:.9rem;transition:.2s;background:#f6fafd;margin-bottom:6px}
+.opt:hover{background:#eaf3fb}
+.opt input{margin-top:3px;accent-color:var(--azul)}
+.opt.ok{border-color:var(--ok);background:#e8f7f0}
+.opt.bad{border-color:var(--bad);background:#fdeeee}
+.why{display:none;font-size:.82rem;color:var(--soft);background:#f6fafd;border-radius:8px;padding:8px 12px;margin-top:6px}
+.why.show{display:block}
+.quiz-result{display:none;margin-top:18px;border-radius:14px;padding:20px 24px;color:#fff;font-size:1.02rem}
+.quiz-result.show{display:block;animation:pageIn .4s ease}
+.score-big{font-family:'Space Grotesk';font-size:2.2rem;font-weight:800}
+
+/* Footer */
+footer{background:#0b2a44;color:#bcd6ea;margin-top:60px;padding:36px 20px}
+.foot-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:26px;font-size:.85rem}
+footer h4{color:#fff;margin-bottom:10px;font-size:.95rem}
+footer a{color:#7fd0c4;text-decoration:none}
+footer a:hover{text-decoration:underline}
+.foot-base{max-width:1180px;margin:22px auto 0;padding-top:16px;border-top:1px solid #1d5c8f;font-size:.78rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* Responsive */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .sec-timeline{grid-template-columns:repeat(2,1fr)}
+  .mainnav{margin-left:0;width:100%}
+}
+@media(max-width:560px){
+  .stage{height:170px}
+  .node-dot{width:38px;height:38px;font-size:.85rem}
+  .fhss-grid{grid-template-columns:repeat(5,1fr);height:150px}
+  .sec-timeline{grid-template-columns:1fr 1fr}
+  .topbar-inner{padding:10px 12px}
+  main{padding:24px 14px 50px}
+}
+/* Impresión / PDF */
+@media print{
+  .topbar,.sim-controls,.cta-row,.no-print,footer .foot-base{display:none!important}
+  .page{display:block!important;animation:none;margin-bottom:30px}
+  body{background:#fff}
+  .card,.sim-box{box-shadow:none;border:1px solid #bbb}
+  .sim-box{background:#fff;color:#000}
+  .caption,.readout{color:#000;background:#fff;border-color:#bbb}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ BARRA DE NAVEGACIÓN ============ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#inicio">
+      <span class="brand-badge">10</span>
+      <span class="brand-name">NetStandards<span class="brand-sub">Consultoría Tecnológica Senior</span></span>
+    </a>
+    <nav class="mainnav" id="mainNav">
+      <a href="#inicio" class="nav-link active" data-page="inicio">Inicio</a>
+      <a href="#ethernet" class="nav-link" data-page="ethernet">802.3 · Ethernet</a>
+      <a href="#wlan" class="nav-link" data-page="wlan">802.11 · WLAN</a>
+      <a href="#bluetooth" class="nav-link" data-page="bluetooth">802.15 · Bluetooth</a>
+      <a href="#comparativa" class="nav-link" data-page="comparativa">Comparativa</a>
+      <a href="#test" class="nav-link" data-page="test">Test</a>
+    </nav>
+    <button class="btn-pdf no-print" onclick="window.print()" title="Guarda el minisitio completo como PDF desde el diálogo de impresión">⬇ PDF</button>
+  </div>
+</header>
+
+<main>
+<!-- ================================================= PÁGINA 1: INICIO -->
+<section class="page active" id="page-inicio">
+  <div class="hero">
+    <div>
+      <span class="kicker"><span class="dot"></span> Tema 10 · Protocolos de redes</span>
+      <h1>Otros estándares: IEEE 802.3, IEEE 802.11 y IEEE 802.15</h1>
+      <p class="lead">Los modelos OSI y TCP/IP explican <em>cómo se organizan</em> las capas de red, pero los detalles técnicos reales —el acceso al medio, el cableado, las frecuencias de radio y la seguridad— los define la familia de estándares <strong>IEEE 802</strong>. En este minisitio interactivo los estudiamos a fondo: <strong>Ethernet (802.3)</strong>, <strong>Wi-Fi (802.11)</strong> y <strong>Bluetooth (802.15)</strong>, entre otros.</p>
+      <div class="cta-row no-print">
+        <a class="btn btn-primary" href="#ethernet">Empezar por Ethernet →</a>
+        <a class="btn btn-accent" href="#test">Ir al test interactivo</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>1997</b><span>Primera versión del estándar IEEE 802.11 (Wi-Fi)</span></div>
+        <div class="stat"><b>100 m</b><span>Alcance máx. del par trenzado Cat5e a 1 Gbps</span></div>
+        <div class="stat"><b>79</b><span>Canales de 1 MHz que salta Bluetooth (FHSS) en 2.4 GHz</span></div>
+        <div class="stat"><b>10 Gbps+</b><span>Velocidad de la fibra óptica en Ethernet, a varios km</span></div>
+      </div>
+    </div>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 1: estándares de red -->
+      <svg viewBox="0 0 640 380" role="img" aria-label="Ilustración: Ethernet, Wi-Fi y Bluetooth conectados">
+        <defs><linearGradient id="gHero" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#0b2a44"/><stop offset="1" stop-color="#155a92"/></linearGradient></defs>
+        <rect width="640" height="380" rx="24" fill="url(#gHero)"/>
+        <path d="M30 330 H150 V280 H230" stroke="#2fd4c0" stroke-width="2" fill="none" opacity=".35"/>
+        <path d="M610 60 H520 V110 H450" stroke="#f2a33c" stroke-width="2" fill="none" opacity=".35"/>
+        <circle cx="30" cy="330" r="4" fill="#2fd4c0" opacity=".6"/><circle cx="610" cy="60" r="4" fill="#f2a33c" opacity=".6"/>
+        <circle cx="90" cy="70" r="3" fill="#4da3ff" opacity=".5"/><circle cx="560" cy="320" r="3" fill="#4da3ff" opacity=".5"/>
+        <!-- Conector Ethernet -->
+        <g><rect x="60" y="200" width="110" height="62" rx="10" fill="#123f6b" stroke="#2fd4c0" stroke-width="2"/>
+        <rect x="170" y="216" width="34" height="30" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+        <rect x="176" y="222" width="4" height="12" fill="#2fd4c0"/><rect x="184" y="222" width="4" height="12" fill="#2fd4c0"/><rect x="192" y="222" width="4" height="12" fill="#2fd4c0"/>
+        <rect x="74" y="214" width="80" height="8" rx="4" fill="#1d5c8f"/><rect x="74" y="230" width="60" height="8" rx="4" fill="#1d5c8f"/></g>
+        <path d="M204 231 C 250 231 250 252 296 252" stroke="#f2a33c" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <!-- Router Wi-Fi -->
+        <g><rect x="296" y="224" width="132" height="54" rx="12" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+        <circle cx="318" cy="251" r="5" fill="#2fd4c0"/><circle cx="338" cy="251" r="5" fill="#f2a33c"/><circle cx="358" cy="251" r="5" fill="#4da3ff"/>
+        <line x1="330" y1="224" x2="318" y2="192" stroke="#2fd4c0" stroke-width="4" stroke-linecap="round"/>
+        <line x1="394" y1="224" x2="406" y2="192" stroke="#2fd4c0" stroke-width="4" stroke-linecap="round"/>
+        <path d="M330 176 A 32 32 0 0 1 394 176" stroke="#f2a33c" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M314 162 A 48 48 0 0 1 410 162" stroke="#f2a33c" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>
+        <path d="M298 148 A 64 64 0 0 1 426 148" stroke="#f2a33c" stroke-width="4" fill="none" stroke-linecap="round" opacity=".4"/></g>
+        <!-- Smartphone -->
+        <g><rect x="474" y="188" width="56" height="100" rx="10" fill="#0b2a44" stroke="#4da3ff" stroke-width="2"/>
+        <rect x="482" y="200" width="40" height="70" rx="4" fill="#123f6b"/><circle cx="502" cy="280" r="4" fill="#4da3ff"/></g>
+        <!-- Auriculares -->
+        <g><path d="M560 250 A 30 30 0 0 1 620 250" stroke="#2fd4c0" stroke-width="6" fill="none"/>
+        <rect x="552" y="246" width="14" height="26" rx="6" fill="#2fd4c0"/><rect x="614" y="246" width="14" height="26" rx="6" fill="#2fd4c0"/></g>
+        <!-- Runa Bluetooth -->
+        <g stroke="#4da3ff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M548 96 V140 M548 96 L560 107 L536 129 M548 140 L560 129 L536 107"/></g>
+        <path d="M530 238 C 545 238 545 258 556 258" stroke="#4da3ff" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <path d="M428 250 C 450 250 452 238 474 238" stroke="#f2a33c" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="kicker"><span class="dot"></span> Los tres protagonistas</span>
+    <h2>Un estándar para cada tipo de red</h2>
+    <div class="grid-3">
+      <article class="card">
+        <div class="icon-chip chip-eth">🔌</div>
+        <h3>IEEE 802.3 · Ethernet</h3>
+        <p>El estándar de la red <strong>cableada</strong>: define el método de acceso <strong>CSMA/CD</strong> y la capa física (par trenzado Cat5/5e/6, fibra óptica y el obsoleto coaxial). Dominante en LAN, presente también en MAN y WAN.</p>
+        <span class="tag">CSMA/CD</span><span class="tag">Cat5e · Fibra</span><span class="tag">LAN</span>
+        <div class="cta-row no-print"><a class="btn btn-ghost" href="#ethernet">Estudiar 802.3 →</a></div>
+      </article>
+      <article class="card">
+        <div class="icon-chip chip-wlan">📶</div>
+        <h3>IEEE 802.11 · WLAN (Wi-Fi)</h3>
+        <p>El equivalente <strong>inalámbrico</strong>: capas física y de enlace con <strong>CSMA/CA</strong>, bandas de <strong>2.4 y 5 GHz</strong>, versiones a/b/g/n/ac/ax y seguridad WEP → WPA → WPA2 → WPA3.</p>
+        <span class="tag">CSMA/CA</span><span class="tag">2.4 / 5 GHz</span><span class="tag">WPA3</span>
+        <div class="cta-row no-print"><a class="btn btn-ghost" href="#wlan">Estudiar 802.11 →</a></div>
+      </article>
+      <article class="card">
+        <div class="icon-chip chip-bt"></div>
+        <h3>IEEE 802.15 · Bluetooth (WPAN)</h3>
+        <p>Redes de <strong>área personal</strong>: corta distancia, bajo consumo y velocidad moderada. Usa <strong>FHSS</strong> (salto de frecuencia) y emparejamiento con autenticación mutua.</p>
+        <span class="tag">FHSS</span><span class="tag">WPAN ~10 m</span><span class="tag">Bajo consumo</span>
+        <div class="cta-row no-print"><a class="btn btn-ghost" href="#bluetooth">Estudiar 802.15 →</a></div>
+      </article>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card">
+      <h3>🧩 ¿Por qué existen estos estándares?</h3>
+      <p>Los protocolos son conjuntos de reglas que definen cómo se transmiten los datos a través de la red. Los modelos <strong>OSI</strong> y <strong>TCP/IP</strong> describen las capas, pero no bastan por sí solos: hacen falta normas que concreten el <strong>método de acceso al medio (MAC)</strong>, el <strong>cableado</strong>, las <strong>distancias máximas</strong>, las <strong>frecuencias de radio</strong> y las <strong>velocidades</strong>.</p>
+      <p>El <strong>IEEE</strong> (Instituto de Ingenieros Eléctricos y Electrónicos) publica la familia <strong>802</strong>, que garantiza que equipos de fabricantes distintos <strong>interoperen</strong> entre sí.</p>
+    </div>
+    <div class="card">
+      <h3>🗂️ La familia IEEE 802 y el modelo OSI</h3>
+      <p>Todos los estándares 802 trabajan en las <strong>capas 1 y 2</strong> del modelo OSI (física y enlace de datos). La capa de enlace se divide en dos subcapas: <strong>LLC</strong> (802.2, control lógico) y <strong>MAC</strong> (acceso al medio, propia de cada estándar).</p>
+      <div class="table-scroll" style="box-shadow:none">
+        <table style="min-width:0">
+          <tbody>
+            <tr><td class="hl">802.3</td><td>MAC + física cableada (Ethernet, CSMA/CD)</td></tr>
+            <tr><td class="hl">802.11</td><td>MAC + física inalámbrica WLAN (CSMA/CA)</td></tr>
+            <tr><td class="hl">802.15</td><td>MAC + física WPAN (Bluetooth, FHSS)</td></tr>
+            <tr><td class="hl">802.2 / 802.1</td><td>Subcapa LLC común y arquitectura de red</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="note-blue">
+      <b>🎬 Vídeos y simulaciones:</b> este minisitio incluye <strong>simulaciones animadas</strong> de CSMA/CD, del salto de frecuencia FHSS y del comparador de bandas Wi-Fi (recursos didácticos interactivos). Como complemento externo recomendado, puedes consultar vídeos explicativos en YouTube sobre <a href="https://www.youtube.com/results?search_query=IEEE+802.3+Ethernet+CSMA%2FCD+explicaci%C3%B3n" target="_blank" rel="noopener">Ethernet y CSMA/CD</a>, <a href="https://www.youtube.com/results?search_query=IEEE+802.11+Wi-Fi+est%C3%A1ndares+explicaci%C3%B3n" target="_blank" rel="noopener">estándares Wi-Fi 802.11</a> y <a href="https://www.youtube.com/results?search_query=Bluetooth+IEEE+802.15+FHSS+explicaci%C3%B3n" target="_blank" rel="noopener">Bluetooth 802.15</a>.
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= PÁGINA 2: ETHERNET -->
+<section class="page" id="page-ethernet">
+  <span class="kicker"><span class="dot"></span> Estándar IEEE 802.3</span>
+  <h1>Ethernet: el rey de la red cableada</h1>
+  <div class="grid-2" style="align-items:start">
+    <div>
+      <p class="lead">El estándar <strong>IEEE 802.3</strong>, definido por el IEEE, especifica las características técnicas de la tecnología <strong>Ethernet</strong>: el <strong>método de acceso al medio (MAC)</strong> y las características <strong>físicas</strong> de la red —tipos de cableado, distancias máximas entre dispositivos y velocidades de transmisión permitidas—.</p>
+      <p>Ethernet se utiliza ampliamente en redes de área local (<strong>LAN</strong>), aunque también aparece en MAN y WAN. Su filosofía: un <strong>medio compartido</strong> donde varias estaciones conviven gracias al protocolo <strong>CSMA/CD</strong>.</p>
+      <div class="note"><b>Idea clave:</b> en Ethernet moderna con conmutadores (switch) y enlaces <em>full-duplex</em> las colisiones desaparecen, pero CSMA/CD sigue siendo la base histórica y conceptual del estándar.</div>
+    </div>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 2: switch Ethernet -->
+      <svg viewBox="0 0 640 300" role="img" aria-label="Ilustración: conmutador Ethernet con cables de par trenzado">
+        <rect width="640" height="300" rx="20" fill="#eef4fb"/>
+        <rect x="110" y="120" width="420" height="86" rx="14" fill="#0e3a5d"/>
+        <rect x="110" y="120" width="420" height="20" rx="10" fill="#155a92"/>
+        <g>
+          <rect x="132" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="182" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="232" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="282" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="332" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#f2a33c" stroke-width="2"/>
+          <rect x="382" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#f2a33c" stroke-width="2"/>
+          <rect x="432" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#4da3ff" stroke-width="2"/>
+          <rect x="482" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#4da3ff" stroke-width="2"/>
+        </g>
+        <g fill="#2fd4c0">
+          <circle cx="149" cy="190" r="4"><animate attributeName="opacity" values="1;.15;1" dur="1.1s" repeatCount="indefinite"/></circle>
+          <circle cx="199" cy="190" r="4"><animate attributeName="opacity" values="1;.15;1" dur="1.4s" repeatCount="indefinite"/></circle>
+          <circle cx="249" cy="190" r="4"><animate attributeName="opacity" values="1;.15;1" dur=".9s" repeatCount="indefinite"/></circle>
+          <circle cx="299" cy="190" r="4" fill="#f2a33c"><animate attributeName="opacity" values="1;.15;1" dur="1.6s" repeatCount="indefinite"/></circle>
+          <circle cx="349" cy="190" r="4" fill="#f2a33c"><animate attributeName="opacity" values="1;.15;1" dur="1.2s" repeatCount="indefinite"/></circle>
+          <circle cx="449" cy="190" r="4" fill="#4da3ff"><animate attributeName="opacity" values="1;.15;1" dur="1s" repeatCount="indefinite"/></circle>
+        </g>
+        <path d="M149 178 V240 H90 V262" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M249 178 V250 H210 V268" stroke="#2fd4c0" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M349 178 V244 H330 V266" stroke="#4da3ff" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M449 178 V252 H500 V270" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <g fill="#155a92">
+          <rect x="70" y="262" width="42" height="26" rx="5"/><rect x="190" y="268" width="42" height="26" rx="5"/>
+          <rect x="310" y="266" width="42" height="26" rx="5"/><rect x="480" y="270" width="42" height="26" rx="5"/>
+        </g>
+        <path d="M60 60 H180 V96" stroke="#c9dcee" stroke-width="2" fill="none"/><circle cx="60" cy="60" r="4" fill="#1f6fb2"/>
+        <path d="M580 60 H470 V96" stroke="#c9dcee" stroke-width="2" fill="none"/><circle cx="580" cy="60" r="4" fill="#f2a33c"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sim-box">
+      <h3>⚡ Simulación interactiva: CSMA/CD <small>· Carrier Sense Multiple Access with Collision Detection</small></h3>
+      <p style="font-size:.9rem;color:#9fc6e4">Cuando un dispositivo quiere transmitir, <strong>escucha el medio</strong>. Si está libre, transmite. Si dos transmiten a la vez se produce una <strong>colisión</strong>: ambos detienen la transmisión, esperan un <strong>tiempo aleatorio</strong> (backoff binario) y reintentan.</p>
+      <div class="stage" id="csmaStage">
+        <div class="medium"></div>
+        <div class="node node-a"><span class="node-dot">A</span><small>Estación A</small></div>
+        <div class="node node-b"><span class="node-dot">B</span><small>Estación B</small></div>
+        <div class="packet pk-a" id="pkA">A</div>
+        <div class="packet pk-b" id="pkB">B</div>
+        <div class="burst" id="csmaBurst">💥</div>
+      </div>
+      <div class="backoff no-print" id="backoffBox" hidden>
+        <div class="bo-row"><label>Espera A</label><div class="bo-bar"><i id="boA"></i></div><b id="boAv">—</b></div>
+        <div class="bo-row"><label>Espera B</label><div class="bo-bar"><i id="boB"></i></div><b id="boBv">—</b></div>
+      </div>
+      <p class="caption" id="csmaCaption">Pulsa «Simular» para ver el ciclo completo: escucha → transmisión → colisión → backoff → retransmisión.</p>
+      <div class="sim-controls no-print">
+        <button class="btn btn-accent" id="csmaPlay">▶ Simular CSMA/CD</button>
+        <button class="btn btn-ghost" id="csmaReset" style="background:#123f6b;color:#dbe9f5;border-color:#1d5c8f">⟲ Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="kicker"><span class="dot"></span> Capa física de Ethernet</span>
+    <h2>Cableado, distancias y velocidades</h2>
+    <p>El estándar define varios tipos de cableado, cada uno con sus propias características de distancia máxima y velocidad de transmisión.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Medio físico</th><th>Velocidad máx. orientativa</th><th>Distancia máx.</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">Coaxial</td><td>10 Mbps</td><td>185–500 m</td><td><strong>Obsoleto</strong>: base de la antigua Ethernet 10Base2 (topología de bus).</td></tr>
+          <tr><td class="hl">Par trenzado Cat5</td><td>100 Mbps</td><td>100 m</td><td>UTP/STP; el equilibrio rendimiento-coste que popularizó Ethernet.</td></tr>
+          <tr><td class="hl">Par trenzado Cat5e</td><td><strong>1 Gbps</strong></td><td><strong>100 m</strong></td><td>Dato del estándar: hasta 1 Gbps a 100 m como máximo.</td></tr>
+          <tr><td class="hl">Par trenzado Cat6</td><td>10 Gbps</td><td>55 m</td><td>Para enlaces cortos de alta velocidad en armarios de red.</td></tr>
+          <tr><td class="hl">Fibra óptica</td><td><strong>10 Gbps o más</strong></td><td>Varios km</td><td>Inmune a interferencias electromagnéticas; troncales y WAN.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card">
+      <h3>✅ Ventajas de Ethernet (802.3)</h3>
+      <p>• Alto rendimiento y <strong>latencia mínima</strong> frente a medios inalámbricos.<br>• Gran fiabilidad: inmune a interferencias de radio (salvo coaxial sin blindaje).<br>• Tecnología madura, económica y estandarizada: interoperabilidad total.<br>• Escalabilidad: de 10 Mbps a 100 Gbps con el mismo concepto de trama.</p>
+    </div>
+    <div class="card">
+      <h3>⚠️ Desventajas y límites</h3>
+      <p>• Requiere <strong>cableado físico</strong>: obra, canaletas y mantenimiento.<br>• Sin <strong>movilidad</strong>: un dispositivo cableado no puede roaming.<br>• Distancia limitada por segmento (100 m en par trenzado): exige repetidores o switch intermedios.<br>• Medio compartido clásico: colisiones que CSMA/CD debe gestionar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= PÁGINA 3: WLAN -->
+<section class="page" id="page-wlan">
+  <span class="kicker"><span class="dot"></span> Estándar IEEE 802.11</span>
+  <h1>WLAN / Wi-Fi: la red sin cables</h1>
+  <div class="grid-2" style="align-items:start">
+    <div>
+      <p class="lead">El estándar <strong>IEEE 802.11</strong> tiene en las redes inalámbricas un rol equivalente al de Ethernet en las cableadas: especifica cómo funcionan las <strong>WLAN</strong> en la <strong>capa de enlace de datos</strong> (con acceso al medio <strong>CSMA/CA</strong>, de evitación de colisiones) y en la <strong>capa física</strong> (tecnologías de transmisión de radio).</p>
+      <p>Los <strong>puntos de acceso</strong> (AP) actúan como puente entre la red cableada y los dispositivos inalámbricos, permitiéndoles acceder a los recursos de la red y potenciando la movilidad y la flexibilidad.</p>
+      <div class="note"><b>Ojo:</b> las señales inalámbricas pueden interceptarse con mayor facilidad que las transmitidas por cable, por eso 802.11 ha evolucionado también en <strong>seguridad</strong>: WEP → WPA → WPA2 → WPA3.</div>
+    </div>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 3: punto de acceso WLAN -->
+      <svg viewBox="0 0 640 320" role="img" aria-label="Ilustración: punto de acceso Wi-Fi con bandas 2.4 y 5 GHz">
+        <rect width="640" height="320" rx="20" fill="#eef4fb"/>
+        <ellipse cx="320" cy="52" rx="74" ry="18" fill="#0e3a5d"/>
+        <circle cx="320" cy="52" r="6" fill="#2fd4c0"/>
+        <path d="M250 78 A 70 70 0 0 0 390 78" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M272 74 A 48 48 0 0 0 368 74" stroke="#12b5a5" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M228 84 A 92 92 0 0 0 412 84" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round" opacity=".55"/>
+        <path d="M294 70 A 26 26 0 0 0 346 70" stroke="#12b5a5" stroke-width="5" fill="none" stroke-linecap="round" opacity=".6"/>
+        <path d="M300 100 C 240 150 200 170 168 208" stroke="#f2a33c" stroke-width="3" stroke-dasharray="6 7" fill="none"/>
+        <path d="M320 104 V210" stroke="#12b5a5" stroke-width="3" stroke-dasharray="6 7" fill="none"/>
+        <path d="M344 100 C 400 150 440 170 470 204" stroke="#f2a33c" stroke-width="3" stroke-dasharray="6 7" fill="none"/>
+        <g><rect x="128" y="208" width="86" height="54" rx="6" fill="#155a92"/><path d="M112 268 H230 L214 282 H128 Z" fill="#0e3a5d"/></g>
+        <g><rect x="298" y="210" width="44" height="80" rx="8" fill="#155a92"/><rect x="305" y="220" width="30" height="54" rx="4" fill="#eef4fb"/></g>
+        <g><rect x="446" y="204" width="66" height="86" rx="8" fill="#155a92"/><rect x="454" y="214" width="50" height="62" rx="4" fill="#eef4fb"/></g>
+        <circle cx="96" cy="86" r="26" fill="#fff3df" stroke="#f2a33c" stroke-width="2"/>
+        <path d="M86 86 A 10 10 0 0 1 106 86 M80 86 A 16 16 0 0 1 112 86" stroke="#f2a33c" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="552" cy="86" r="26" fill="#e2f7f4" stroke="#12b5a5" stroke-width="2"/>
+        <path d="M542 86 A 10 10 0 0 1 562 86 M536 86 A 16 16 0 0 1 568 86" stroke="#12b5a5" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="kicker"><span class="dot"></span> Evolución del estándar</span>
+    <h2>Versiones de 802.11: de 1997 a hoy</h2>
+    <p>Cada versión se identifica con una letra añadida al final (802.11a, b, g, n, ac, ax); las dos últimas, <strong>ac</strong> y <strong>ax</strong>, son las más utilizadas en la actualidad.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Versión</th><th>Año</th><th>Banda de frecuencia</th><th>Velocidad máx. teórica</th><th>Comentario</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">802.11 (original)</td><td>1997</td><td>2.4 GHz</td><td>2 Mbps</td><td>El punto de partida del Wi-Fi.</td></tr>
+          <tr><td class="hl">802.11a</td><td>1999</td><td><strong>5 GHz</strong></td><td>54 Mbps</td><td>Más velocidad, menor cobertura.</td></tr>
+          <tr><td class="hl">802.11b</td><td>1999</td><td>2.4 GHz</td><td>11 Mbps</td><td>Popularizó el Wi-Fi doméstico.</td></tr>
+          <tr><td class="hl">802.11g</td><td>2003</td><td>2.4 GHz</td><td>54 Mbps</td><td>Velocidad de «a» en banda de 2.4 GHz.</td></tr>
+          <tr><td class="hl">802.11n (Wi-Fi 4)</td><td>2009</td><td><strong>2.4 y 5 GHz</strong></td><td>600 Mbps</td><td>MIMO: varias antenas simultáneas.</td></tr>
+          <tr><td class="hl">802.11ac (Wi-Fi 5)</td><td>2013</td><td>5 GHz (y 2.4)</td><td>≈ 1.3–6.9 Gbps</td><td>Muy usado hoy en routers domésticos.</td></tr>
+          <tr><td class="hl">802.11ax (Wi-Fi 6)</td><td>2021</td><td><strong>2.4 y 5 GHz</strong></td><td>≈ 9.6 Gbps</td><td>El más usado actualmente: eficiencia en alta densidad.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="sim-box">
+      <h3>📡 Comparador interactivo de bandas</h3>
+      <p style="font-size:.88rem;color:#9fc6e4">802.11b y g usan la banda de <strong>2.4 GHz</strong>; 802.11a usa <strong>5 GHz</strong>; n, ac y ax pueden usar ambas. La banda de 5 GHz permite mayor tasa de transmisión, pero con menor cobertura.</p>
+      <div class="chip-row no-print">
+        <button class="chip active" id="band24" data-band="24">2.4 GHz</button>
+        <button class="chip" id="band5" data-band="5">5 GHz</button>
+      </div>
+      <div class="band-stage">
+        <div class="coverage" id="covCircle"></div>
+        <div class="ap-dot">AP</div>
+      </div>
+      <div class="band-meter"><span style="width:74px">Velocidad</span><div class="bo-bar"><i id="speedFill" style="width:38%"></i></div></div>
+      <div class="band-meter"><span style="width:74px">Cobertura</span><div class="bo-bar"><i id="covFill" style="width:86%"></i></div></div>
+      <p class="caption" id="bandCaption" style="margin-top:10px">2.4 GHz: mayor cobertura y penetración de obstáculos, pero menor velocidad (11–54 Mbps en b/g) y más interferencias (microondas, otros Wi-Fi, Bluetooth).</p>
+    </div>
+    <div class="sim-box">
+      <h3>🔐 Línea de tiempo de seguridad Wi-Fi</h3>
+      <p style="font-size:.88rem;color:#9fc6e4">Pulsa cada protocolo para ver su ficha. Cada uno proporcionó un nivel de seguridad superior al anterior.</p>
+      <div class="sec-timeline no-print" style="margin-top:12px">
+        <button class="sec-btn active" data-sec="wep"><b>WEP</b><span>1997 · vulnerable</span></button>
+        <button class="sec-btn" data-sec="wpa"><b>WPA</b><span>2003 · transición</span></button>
+        <button class="sec-btn" data-sec="wpa2"><b>WPA2</b><span>2004 · AES</span></button>
+        <button class="sec-btn" data-sec="wpa3"><b>WPA3</b><span>2018 · actual</span></button>
+      </div>
+      <div class="sec-detail" id="secDetail">
+        <h4>WEP · Wired Equivalent Privacy (1997)</h4>
+        <p>Uno de los primeros protocolos de seguridad introducidos en 802.11. Se demostró que era <strong>vulnerable a varios tipos de ataques</strong> (claves estáticas y vectores de inicio débiles), por lo que hoy está completamente desaconsejado.</p>
+      </div>
+      <div class="note" style="margin-top:12px"><b>CSMA/CA:</b> en WLAN no se pueden detectar colisiones fiablemente por radio, así que se <em>evitan</em>: el nodo escucha, espera si el medio está ocupado y confirma la recepción de tramas.</div>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card">
+      <h3>✅ Ventajas de las WLAN</h3>
+      <p>• <strong>Movilidad y flexibilidad</strong>: conexión sin cables físicos desde cualquier punto cubierto.<br>• Instalación rápida y sin obra; fácil añadir dispositivos.<br>• Ideal para hogares, oficinas y espacios con muchos clientes (el AP gestiona y dirige el tráfico).</p>
+    </div>
+    <div class="card">
+      <h3>⚠️ Desafíos de las WLAN</h3>
+      <p>• <strong>Seguridad</strong>: la señal radiada se intercepta con más facilidad → cifrado WPA2/WPA3 imprescindible.<br>• <strong>Velocidad y fiabilidad</strong> inferiores al cable: interferencias, atenuación por obstáculos y medio compartido.<br>• Cobertura limitada por banda: 5 GHz alcanza menos distancia que 2.4 GHz.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= PÁGINA 4: BLUETOOTH -->
+<section class="page" id="page-bluetooth">
+  <span class="kicker"><span class="dot"></span> Estándar IEEE 802.15</span>
+  <h1>Bluetooth: redes de área personal (WPAN)</h1>
+  <div class="grid-2" style="align-items:start">
+    <div>
+      <p class="lead">El estándar <strong>IEEE 802.15</strong> se aplica a las redes inalámbricas de <strong>área personal (WPAN)</strong>: conectan dispositivos a corta distancia (el alcance físico de una persona, ~10 m), con <strong>bajo consumo energético</strong> y velocidad de transmisión <strong>moderada</strong>.</p>
+      <p>Es común en teléfonos móviles, portátiles, altavoces, auriculares, teclados, ratones y wearables: transmite audio del móvil a un auricular, transfiere archivos entre dispositivos cercanos o conecta periféricos a un ordenador.</p>
+      <div class="note"><b>Seguridad:</b> Bluetooth usa <strong>emparejamiento</strong> (pairing): dos dispositivos establecen una conexión segura mediante <strong>autenticación mutua</strong>; después se recuerdan entre sí y reconectan rápido y seguro.</div>
+    </div>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 4: WPAN Bluetooth -->
+      <svg viewBox="0 0 640 300" role="img" aria-label="Ilustración: red personal Bluetooth con teléfono, auriculares, reloj, teclado y ratón">
+        <rect width="640" height="300" rx="20" fill="#eef4fb"/>
+        <circle cx="320" cy="150" r="118" fill="none" stroke="#4da3ff" stroke-width="2" stroke-dasharray="4 8" opacity=".7"/>
+        <circle cx="320" cy="150" r="78" fill="none" stroke="#4da3ff" stroke-width="2" stroke-dasharray="4 8" opacity=".4"/>
+        <g><rect x="298" y="104" width="46" height="88" rx="9" fill="#155a92"/><rect x="305" y="114" width="32" height="60" rx="4" fill="#eef4fb"/><circle cx="321" cy="183" r="4" fill="#4da3ff"/></g>
+        <g stroke="#2461c7" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M321 44 V76 M321 44 L330 52 L312 68 M321 76 L330 68 L312 52"/></g>
+        <path d="M298 130 C 250 110 220 96 186 84" stroke="#4da3ff" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <path d="M344 130 C 396 110 428 96 462 84" stroke="#4da3ff" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <path d="M298 172 C 250 194 220 206 188 216" stroke="#4da3ff" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <path d="M344 172 C 396 194 428 206 460 216" stroke="#4da3ff" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <g><path d="M120 78 A 30 30 0 0 1 180 78" stroke="#0e3a5d" stroke-width="6" fill="none"/><rect x="112" y="74" width="13" height="24" rx="6" fill="#0e3a5d"/><rect x="175" y="74" width="13" height="24" rx="6" fill="#0e3a5d"/></g>
+        <g><rect x="452" y="62" width="40" height="44" rx="9" fill="#0e3a5d"/><rect x="462" y="46" width="20" height="12" rx="4" fill="#155a92"/><rect x="462" y="108" width="20" height="12" rx="4" fill="#155a92"/><rect x="460" y="72" width="24" height="24" rx="4" fill="#4da3ff" opacity=".7"/></g>
+        <g><rect x="120" y="212" width="96" height="34" rx="6" fill="#0e3a5d"/><g fill="#eef4fb"><circle cx="136" cy="224" r="3"/><circle cx="150" cy="224" r="3"/><circle cx="164" cy="224" r="3"/><circle cx="178" cy="224" r="3"/><circle cx="192" cy="224" r="3"/><circle cx="143" cy="236" r="3"/><circle cx="157" cy="236" r="3"/><circle cx="171" cy="236" r="3"/><circle cx="185" cy="236" r="3"/></g></g>
+        <g><ellipse cx="478" cy="228" rx="17" ry="24" fill="#0e3a5d"/><line x1="478" y1="206" x2="478" y2="222" stroke="#eef4fb" stroke-width="3"/></g>
+        <g stroke="#4da3ff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+          <path d="M232 140 V160 M232 140 L238 145 L226 155 M232 160 L238 155 L226 145"/>
+          <path d="M404 140 V160 M404 140 L410 145 L398 155 M404 160 L410 155 L398 145"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sim-box">
+      <h3>🐇 Simulación interactiva: FHSS <small>· Frequency Hopping Spread Spectrum</small></h3>
+      <p style="font-size:.9rem;color:#9fc6e4">Bluetooth divide la banda de <strong>2.402–2.480 GHz en 79 canales de 1 MHz</strong> y <strong>salta rápidamente</strong> entre ellos siguiendo una secuencia pseudoaleatoria conocida por ambos dispositivos: así minimiza la interferencia y mejora la seguridad. (Aquí mostramos 10 canales representativos.)</p>
+      <div class="fhss-devices">📱 <span class="fhss-link" id="fhssLink">⇄</span> 🎧</div>
+      <div class="fhss-grid" id="fhssGrid"></div>
+      <p class="readout" id="fhssReadout">Pulsa ▶ para iniciar el salto de frecuencia.</p>
+      <div class="sim-controls no-print">
+        <button class="btn btn-accent" id="fhssPlay">▶ Iniciar saltos</button>
+        <button class="btn btn-ghost" id="fhssReset" style="background:#123f6b;color:#dbe9f5;border-color:#1d5c8f">⟲ Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card">
+      <h3>📲 Aplicaciones típicas de Bluetooth</h3>
+      <p>• Streaming de <strong>audio</strong>: del móvil a auriculares o altavoces.<br>• <strong>Periféricos</strong>: teclados, ratones y mandos sin cables.<br>• <strong>Transferencia de archivos</strong> entre dispositivos cercanos (ej.: compartir una presentación en un café, sin cables).<br>• <strong>Wearables e IoT</strong>: pulseras, relojes y sensores de bajo consumo.</p>
+    </div>
+    <div class="card">
+      <h3>🆚 Wi-Fi (802.11) vs Bluetooth (802.15)</h3>
+      <div class="table-scroll" style="box-shadow:none">
+        <table style="min-width:0">
+          <thead><tr><th>Criterio</th><th>Wi-Fi 802.11</th><th>Bluetooth 802.15</th></tr></thead>
+          <tbody>
+            <tr><td class="hl">Objetivo</td><td>Conectividad de alta velocidad en LAN</td><td>Conectar dispositivos cercanos (WPAN)</td></tr>
+            <tr><td class="hl">Alcance</td><td>Decenas de metros</td><td>~10 m (área personal)</td></tr>
+            <tr><td class="hl">Consumo</td><td>Moderado-alto</td><td><strong>Muy bajo</strong></td></tr>
+            <tr><td class="hl">Velocidad</td><td>Alta (hasta Gbps)</td><td>Moderada (1–3 Mbps)</td></tr>
+            <tr><td class="hl">Acceso al medio</td><td>CSMA/CA</td><td>FHSS</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card">
+      <h3>✅ Ventajas</h3>
+      <p>• Bajo consumo: ideal para batería y wearables.<br>• Conexión sencilla y automática tras el emparejamiento.<br>• FHSS: robustez frente a interferencias en la saturada banda de 2.4 GHz.<br>• Sin cables ni infraestructura: comunicación directa dispositivo a dispositivo.</p>
+    </div>
+    <div class="card">
+      <h3>⚠️ Desventajas</h3>
+      <p>• Velocidad moderada: no sirve para vídeo pesado o redes troncales.<br>• Alcance muy limitado (área personal).<br>• Comparte banda de 2.4 GHz con Wi-Fi y microondas: posible interferencia.<br>• Requiere emparejamiento y autenticación para una conexión segura.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= PÁGINA 5: COMPARATIVA -->
+<section class="page" id="page-comparativa">
+  <span class="kicker"><span class="dot"></span> Estudio comparativo</span>
+  <h1>Los tres estándares, cara a cara</h1>
+  <p class="lead">Tabla comparativa de rigor técnico: ámbito, medio, acceso, rendimiento y uso típico de cada estándar de la familia IEEE 802.</p>
+  <div class="section" style="margin-top:20px">
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Criterio</th><th>IEEE 802.3 · Ethernet</th><th>IEEE 802.11 · WLAN (Wi-Fi)</th><th>IEEE 802.15 · Bluetooth</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">Tipo de red</td><td>LAN cableada (también MAN/WAN)</td><td>WLAN inalámbrica local</td><td>WPAN (área personal)</td></tr>
+          <tr><td class="hl">Medio</td><td>Par trenzado, fibra óptica, coaxial (obsoleto)</td><td>Ondas de radio 2.4 / 5 GHz</td><td>Ondas de radio 2.4 GHz</td></tr>
+          <tr><td class="hl">Acceso al medio</td><td><strong>CSMA/CD</strong> (detección de colisiones)</td><td><strong>CSMA/CA</strong> (evitación de colisiones)</td><td><strong>FHSS</strong> (salto de frecuencia)</td></tr>
+          <tr><td class="hl">Velocidad orientativa</td><td>1 Gbps (Cat5e) → 10 Gbps+ (fibra)</td><td>11 Mbps (b) → 9.6 Gbps (ax)</td><td>1–3 Mbps (moderada)</td></tr>
+          <tr><td class="hl">Alcance típico</td><td>100 m por segmento (par trenzado)</td><td>Decenas de metros por AP</td><td>~10 m</td></tr>
+          <tr><td class="hl">Capas OSI</td><td>1 (física) y 2 (enlace: MAC+LLC)</td><td>1 y 2</td><td>1 y 2</td></tr>
+          <tr><td class="hl">Seguridad destacada</td><td>Medio físico cerrado; 802.1X</td><td>WEP → WPA → WPA2 → <strong>WPA3</strong></td><td>Emparejamiento con autenticación mutua</td></tr>
+          <tr><td class="hl">Uso típico</td><td>Oficinas, datacenters, troncales</td><td>Hogares, oficinas, movilidad</td><td>Audio, periféricos, wearables, archivos</td></tr>
+          <tr><td class="hl">Tolerancia a fallos</td><td>Alta: enlaces dedicados por switch</td><td>Media: depende del AP central</td><td>Alta ante interferencias gracias a FHSS</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 5: tres zonas comparadas -->
+      <svg viewBox="0 0 760 260" role="img" aria-label="Ilustración: LAN cableada, WLAN inalámbrica y WPAN personal comparadas">
+        <rect width="760" height="260" rx="20" fill="#eef4fb"/>
+        <line x1="258" y1="20" x2="258" y2="240" stroke="#dce6f2" stroke-width="3"/>
+        <line x1="506" y1="20" x2="506" y2="240" stroke="#dce6f2" stroke-width="3"/>
+        <rect x="30" y="26" width="90" height="16" rx="8" fill="#1f6fb2"/><rect x="280" y="26" width="90" height="16" rx="8" fill="#f2a33c"/><rect x="528" y="26" width="90" height="16" rx="8" fill="#4da3ff"/>
+        <g><rect x="90" y="96" width="120" height="34" rx="8" fill="#0e3a5d"/><g fill="#2fd4c0"><circle cx="110" cy="113" r="4"/><circle cx="130" cy="113" r="4"/><circle cx="150" cy="113" r="4"/></g>
+        <path d="M110 130 V176 H70 V196" stroke="#1f6fb2" stroke-width="4" fill="none"/><path d="M150 130 V180 H190 V200" stroke="#1f6fb2" stroke-width="4" fill="none"/><path d="M180 130 V168 H226 V192" stroke="#1f6fb2" stroke-width="4" fill="none"/>
+        <rect x="52" y="196" width="38" height="26" rx="5" fill="#155a92"/><rect x="172" y="200" width="38" height="26" rx="5" fill="#155a92"/><rect x="208" y="192" width="38" height="26" rx="5" fill="#155a92"/></g>
+        <g><rect x="352" y="80" width="96" height="26" rx="12" fill="#0e3a5d"/><circle cx="400" cy="93" r="4" fill="#2fd4c0"/>
+        <path d="M368 116 A 34 34 0 0 0 436 116" stroke="#f2a33c" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M352 124 A 50 50 0 0 0 452 124" stroke="#f2a33c" stroke-width="4" fill="none" stroke-linecap="round" opacity=".5"/>
+        <path d="M378 132 C 340 160 320 172 300 190" stroke="#f2a33c" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <path d="M424 132 C 456 160 470 172 486 188" stroke="#f2a33c" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <rect x="282" y="190" width="40" height="28" rx="5" fill="#155a92"/><rect x="470" y="188" width="26" height="44" rx="6" fill="#155a92"/></g>
+        <g><circle cx="630" cy="150" r="76" fill="none" stroke="#4da3ff" stroke-width="2" stroke-dasharray="4 8" opacity=".7"/>
+        <rect x="612" y="120" width="34" height="60" rx="7" fill="#155a92"/><rect x="618" y="128" width="22" height="40" rx="3" fill="#eef4fb"/>
+        <path d="M560 96 A 18 18 0 0 1 596 96" stroke="#0e3a5d" stroke-width="5" fill="none"/><rect x="554" y="94" width="9" height="16" rx="4" fill="#0e3a5d"/><rect x="593" y="94" width="9" height="16" rx="4" fill="#0e3a5d"/>
+        <rect x="676" y="86" width="26" height="30" rx="6" fill="#0e3a5d"/><rect x="682" y="94" width="14" height="14" rx="3" fill="#4da3ff"/>
+        <ellipse cx="688" cy="196" rx="12" ry="17" fill="#0e3a5d"/></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="kicker"><span class="dot"></span> Entre otros…</span>
+    <h2>Otros estándares de la familia IEEE 802</h2>
+    <div class="grid-3">
+      <article class="card"><span class="tag">802.1</span><h3>Arquitectura de red</h3><p>Define la arquitectura global, la gestión y la interconexión de redes 802 (puentes, conmutación VLAN).</p></article>
+      <article class="card"><span class="tag">802.2</span><h3>LLC · Control Lógico de Enlace</h3><p>Subcapa superior de enlace común a todos los 802: multiplexa protocolos y controla el flujo lógico.</p></article>
+      <article class="card"><span class="tag">802.4</span><h3>Token Bus</h3><p>Red en bus con paso de testigo: acceso determinista usado en entornos industriales.</p></article>
+      <article class="card"><span class="tag">802.5</span><h3>Token Ring</h3><p>Red en anillo con token circulante (IBM): sin colisiones, acceso por turno.</p></article>
+      <article class="card"><span class="tag">802.6</span><h3>MAN · DQDB</h3><p>Redes de área metropolitana: doble bus con transferencia distribuida de colas.</p></article>
+      <article class="card"><span class="tag">802.16</span><h3>WiMAX</h3><p>Banda ancha inalámbrica metropolitana: cobertura de varios kilómetros (puente entre MAN y WWAN).</p></article>
+    </div>
+    <div class="note-blue" style="margin-top:20px"><b>Relación con los modelos:</b> en el <strong>modelo OSI</strong>, todos estos estándares viven en las capas <strong>física (1)</strong> y <strong>enlace (2)</strong>; en el <strong>modelo TCP/IP</strong> equivalen a la <strong>capa de acceso a la red</strong>. Por encima trabajan IP, TCP/UDP y las aplicaciones (HTTP, SMTP, FTP…), igual que estudiamos en los temas 8 y 9.</div>
+  </div>
+</section>
+
+<!-- ================================================= PÁGINA 6: TEST -->
+<section class="page" id="page-test">
+  <span class="kicker"><span class="dot"></span> Autoevaluación</span>
+  <h1>Test interactivo del Tema 10</h1>
+  <div class="grid-2" style="align-items:center;margin-bottom:24px">
+    <p class="lead">10 preguntas sobre IEEE 802.3, 802.11 y 802.15. Al corregir verás cada acierto en verde, cada error en rojo y su explicación. ¡Demuestra el nivel de tu consultoría!</p>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 6: test -->
+      <svg viewBox="0 0 480 240" role="img" aria-label="Ilustración: estudiante haciendo un test online sobre redes">
+        <rect width="480" height="240" rx="18" fill="#eef4fb"/>
+        <rect x="150" y="46" width="180" height="112" rx="10" fill="#0e3a5d"/>
+        <path d="M128 168 H352 L332 186 H148 Z" fill="#155a92"/>
+        <rect x="166" y="62" width="110" height="8" rx="4" fill="#eef4fb" opacity=".85"/>
+        <g><circle cx="172" cy="88" r="6" fill="#1a9e6e"/><rect x="186" y="84" width="90" height="7" rx="3.5" fill="#9fc6e4"/></g>
+        <g><circle cx="172" cy="108" r="6" fill="#d64545"/><rect x="186" y="104" width="76" height="7" rx="3.5" fill="#9fc6e4"/></g>
+        <g><circle cx="172" cy="128" r="6" fill="#f2a33c"/><rect x="186" y="124" width="98" height="7" rx="3.5" fill="#9fc6e4"/></g>
+        <path d="M169 88 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M170 106 l5 5 M175 106 l-5 5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="90" cy="70" r="20" fill="#fff3df" stroke="#f2a33c" stroke-width="2"/><path d="M84 64 a6 6 0 1 1 9 5 v4" stroke="#8a5a10" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="93" cy="79" r="2.4" fill="#8a5a10"/>
+        <circle cx="398" cy="84" r="20" fill="#e8f7f0" stroke="#1a9e6e" stroke-width="2"/><path d="M390 84 l6 6 l11 -12" stroke="#1a9e6e" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <g stroke="#4da3ff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M392 168 V192 M392 168 L399 174 L385 186 M392 192 L399 186 L385 174"/></g>
+        <path d="M60 190 A 22 22 0 0 1 104 190" stroke="#1f6fb2" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>
+      </svg>
+    </div>
+  </div>
+
+  <form id="quizForm" novalidate></form>
+  <div class="cta-row no-print">
+    <button type="button" class="btn btn-primary" id="quizSubmit">✔ Corregir test</button>
+    <button type="button" class="btn btn-ghost" id="quizRetry">⟲ Reintentar</button>
+    <button type="button" class="btn btn-accent" onclick="window.print()">⬇ Guardar minisitio en PDF</button>
+  </div>
+  <div class="quiz-result" id="quizResult"></div>
+</section>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <div>
+      <h4>NetStandards · Tema 10</h4>
+      <p>Minisitio educativo interactivo sobre los estándares IEEE 802.3 (Ethernet), 802.11 (WLAN) y 802.15 (Bluetooth), entre otros. Elaborado en HTML5 + CSS3 + JavaScript con Flexbox/Grid y diseño responsive.</p>
+    </div>
+    <div>
+      <h4>Secciones</h4>
+      <p><a href="#inicio">Inicio</a> · <a href="#ethernet">Ethernet</a> · <a href="#wlan">WLAN</a> · <a href="#bluetooth">Bluetooth</a> · <a href="#comparativa">Comparativa</a> · <a href="#test">Test</a></p>
+    </div>
+    <div>
+      <h4>Fuentes de referencia</h4>
+      <p>• Material del curso «Redes Informáticas» (Ramatics Educación), Tema 10.<br>
+      • IONOS Digitalguide: <a href="https://www.ionos.com/es-us/digitalguide/servidores/know-how/csmacd/" target="_blank" rel="noopener">CSMA/CD: protocolo de transmisión anticolisiones</a> [[2]].<br>
+      • Wikipedia: <a href="https://es.wikipedia.org/wiki/IEEE_802.11" target="_blank" rel="noopener">IEEE 802.11</a> [[5]].<br>
+      • Banda 2.402–2.480 GHz dividida en 79 canales de 1 MHz (FHSS) [[9]].</p>
+    </div>
+  </div>
+  <div class="foot-base">
+    <span>© Consultoría Tecnológica Senior · Proyecto de clase (entrega individual / elaboración en pareja).</span>
+    <span>Hecho con ❤, HTML5, CSS3 y JS vanilla.</span>
+  </div>
+</footer>
+
+<script>
+/* ================= NAVEGACIÓN ENTRE PÁGINAS ================= */
+const navLinks = document.querySelectorAll('.nav-link');
+function showPage(pageId){
+  document.querySelectorAll('.page').forEach(function(pg){ pg.classList.remove('active'); });
+  const target = document.getElementById('page-' + pageId);
+  if(target){ target.classList.add('active'); }
+  navLinks.forEach(function(lk){ lk.classList.toggle('active', lk.dataset.page === pageId); });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+navLinks.forEach(function(lk){
+  lk.addEventListener('click', function(ev){
+    ev.preventDefault();
+    showPage(lk.dataset.page);
+    history.replaceState(null, '', '#' + lk.dataset.page);
+  });
+});
+document.querySelectorAll('a[href^="#"]:not(.nav-link)').forEach(function(a){
+  a.addEventListener('click', function(ev){
+    const id = a.getAttribute('href').slice(1);
+    if(document.getElementById('page-' + id)){
+      ev.preventDefault(); showPage(id); history.replaceState(null, '', '#' + id);
+    }
+  });
+});
+const initialHash = location.hash.replace('#','');
+if(initialHash && document.getElementById('page-' + initialHash)){ showPage(initialHash); }
+
+/* ================= SIMULADOR CSMA/CD ================= */
+const csmaStage = document.getElementById('csmaStage');
+const pkA = document.getElementById('pkA');
+const pkB = document.getElementById('pkB');
+const csmaBurst = document.getElementById('csmaBurst');
+const csmaCaption = document.getElementById('csmaCaption');
+const backoffBox = document.getElementById('backoffBox');
+const boA = document.getElementById('boA');
+const boB = document.getElementById('boB');
+const boAv = document.getElementById('boAv');
+const boBv = document.getElementById('boBv');
+let csmaRunning = false;
+let csmaToken = 0;
+function sleepMs(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+function placePacket(el, leftPct, durMs){
+  el.style.transition = 'none';
+  void el.offsetWidth;
+  el.style.transition = 'left ' + durMs + 'ms linear';
+  el.style.left = leftPct + '%';
+}
+function resetCsma(){
+  csmaToken++;
+  csmaRunning = false;
+  csmaStage.classList.remove('listening','collision');
+  pkA.classList.remove('show'); pkB.classList.remove('show');
+  csmaBurst.classList.remove('show');
+  backoffBox.hidden = true;
+  boA.style.width = '0%'; boB.style.width = '0%';
+  boAv.textContent = '—'; boBv.textContent = '—';
+  placePacket(pkA, 9, 0); placePacket(pkB, 91, 0);
+  csmaCaption.textContent = 'Pulsa «Simular» para ver el ciclo completo: escucha → transmisión → colisión → backoff → retransmisión.';
+}
+async function runCsma(){
+  if(csmaRunning) return;
+  resetCsma();
+  csmaRunning = true;
+  const myToken = csmaToken;
+  csmaStage.classList.add('listening');
+  csmaCaption.textContent = '1 · CARRIER SENSE: A y B escuchan el medio… está libre (sin portadora).';
+  await sleepMs(1500); if(myToken !== csmaToken) return;
+  csmaStage.classList.remove('listening');
+  csmaCaption.textContent = '2 · MULTIPLE ACCESS: A y B empiezan a transmitir a la vez por el medio compartido.';
+  pkA.classList.add('show'); pkB.classList.add('show');
+  placePacket(pkA, 50, 1700); placePacket(pkB, 50, 1700);
+  await sleepMs(1750); if(myToken !== csmaToken) return;
+  csmaStage.classList.add('collision');
+  csmaBurst.classList.add('show');
+  pkA.classList.remove('show'); pkB.classList.remove('show');
+  csmaCaption.textContent = '3 · COLLISION DETECTION: ¡colisión! Las señales se solapan y ambos marcos se corrompen.';
+  await sleepMs(1400); if(myToken !== csmaToken) return;
+  csmaBurst.classList.remove('show');
+  csmaStage.classList.remove('collision');
+  backoffBox.hidden = false;
+  csmaCaption.textContent = '4 · BACKOFF BINARIO: cada estación espera un tiempo aleatorio distinto antes de reintentar.';
+  boAv.textContent = '2 ms'; boBv.textContent = '6 ms';
+  requestAnimationFrame(function(){ boA.style.width = '30%'; boB.style.width = '78%'; });
+  await sleepMs(1600); if(myToken !== csmaToken) return;
+  csmaCaption.textContent = '5 · B se abstiene (su temporizador es mayor); A retransmite y el marco llega completo ✅';
+  pkA.classList.add('show');
+  placePacket(pkA, 91, 1900);
+  await sleepMs(2000); if(myToken !== csmaToken) return;
+  csmaCaption.textContent = '✔ FIN: así gestiona Ethernet (802.3) el medio compartido: escuchar, transmitir, detectar colisiones y reintentar con espera aleatoria.';
+  csmaRunning = false;
+}
+document.getElementById('csmaPlay').addEventListener('click', runCsma);
+document.getElementById('csmaReset').addEventListener('click', resetCsma);
+resetCsma();
+
+/* ================= SIMULADOR FHSS (BLUETOOTH) ================= */
+const fhssChannels = [12, 45, 78, 23, 67, 34, 56, 1, 70, 29];
+const fhssGrid = document.getElementById('fhssGrid');
+const fhssReadout = document.getElementById('fhssReadout');
+let fhssTimer = null;
+let fhssHop = -1;
+fhssChannels.forEach(function(ch){
+  const bar = document.createElement('div');
+  bar.className = 'fhss-bar';
+  bar.dataset.ch = ch;
+  bar.innerHTML = '<span>' + ch + '</span>';
+  fhssGrid.appendChild(bar);
+});
+function fhssStep(){
+  fhssHop = (fhssHop + 1) % fhssChannels.length;
+  const ch = fhssChannels[fhssHop];
+  fhssGrid.querySelectorAll('.fhss-bar').forEach(function(b){
+    b.classList.toggle('on', Number(b.dataset.ch) === ch);
+  });
+  const mhz = 2401 + ch;
+  fhssReadout.textContent = 'Salto ' + (fhssHop + 1) + '/' + fhssChannels.length + ' → canal ' + ch + ' (' + (mhz/1000).toFixed(3) + ' GHz) · la pareja 📱🎧 salta sincronizada';
+}
+function fhssStop(){
+  if(fhssTimer){ clearInterval(fhssTimer); fhssTimer = null; }
+  document.getElementById('fhssPlay').textContent = '▶ Iniciar saltos';
+}
+document.getElementById('fhssPlay').addEventListener('click', function(){
+  if(fhssTimer){ fhssStop(); return; }
+  fhssStep();
+  fhssTimer = setInterval(fhssStep, 620);
+  this.textContent = '⏸ Pausar';
+});
+document.getElementById('fhssReset').addEventListener('click', function(){
+  fhssStop();
+  fhssHop = -1;
+  fhssGrid.querySelectorAll('.fhss-bar').forEach(function(b){ b.classList.remove('on'); });
+  fhssReadout.textContent = 'Pulsa ▶ para iniciar el salto de frecuencia.';
+});
+
+/* ================= COMPARADOR DE BANDAS WI-FI ================= */
+const covCircle = document.getElementById('covCircle');
+const speedFill = document.getElementById('speedFill');
+const covFill = document.getElementById('covFill');
+const bandCaption = document.getElementById('bandCaption');
+const bandButtons = [document.getElementById('band24'), document.getElementById('band5')];
+function setBand(mode){
+  bandButtons.forEach(function(bt){ bt.classList.toggle('active', bt.dataset.band === mode); });
+  if(mode === '24'){
+    covCircle.style.width = '210px'; covCircle.style.height = '210px';
+    covCircle.style.background = 'radial-gradient(circle, rgba(242,163,60,.4), rgba(242,163,60,.06) 70%)';
+    covCircle.style.borderColor = 'rgba(242,163,60,.7)';
+    speedFill.style.width = '38%'; covFill.style.width = '86%';
+    bandCaption.textContent = '2.4 GHz: mayor cobertura y penetración de obstáculos, pero menor velocidad (11–54 Mbps en b/g) y más interferencias (microondas, otros Wi-Fi, Bluetooth).';
+  }else{
+    covCircle.style.width = '118px'; covCircle.style.height = '118px';
+    covCircle.style.background = 'radial-gradient(circle, rgba(18,181,165,.45), rgba(18,181,165,.06) 70%)';
+    covCircle.style.borderColor = 'rgba(18,181,165,.8)';
+    speedFill.style.width = '88%'; covFill.style.width = '42%';
+    bandCaption.textContent = '5 GHz: mayor tasa de transmisión de datos (802.11a/ac/ax), pero menor cobertura y peor penetración de obstáculos que la banda de 2.4 GHz.';
+  }
+}
+bandButtons.forEach(function(bt){ bt.addEventListener('click', function(){ setBand(bt.dataset.band); }); });
+
+/* ================= SEGURIDAD WI-FI ================= */
+const secInfo = {
+  wep:  {t:'WEP · Wired Equivalent Privacy (1997)', d:'Uno de los primeros protocolos de seguridad introducidos en 802.11. Se demostró que era <strong>vulnerable a varios tipos de ataques</strong>, por lo que fue reemplazado. Hoy no debe usarse.'},
+  wpa:  {t:'WPA · Wi-Fi Protected Access (2003)', d:'Mejora transitoria sobre WEP (claves dinámicas TKIP) mientras se preparaba WPA2. Supuso un salto importante, pero hoy se considera insuficiente.'},
+  wpa2: {t:'WPA2 (2004)', d:'Introduce cifrado fuerte <strong>AES-CCM</strong>. Fue el estándar recomendado durante más de una década y sigue siendo el mínimo exigible en redes actuales.'},
+  wpa3: {t:'WPA3 (2018)', d:'El nivel de seguridad <strong>superior</strong> actual: protege mejor las contraseñas (emparejamiento SAE), cifra incluso en redes abiertas y resiste ataques de diccionario.'}
+};
+const secDetail = document.getElementById('secDetail');
+document.querySelectorAll('.sec-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.sec-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    const info = secInfo[btn.dataset.sec];
+    secDetail.innerHTML = '<h4>' + info.t + '</h4><p>' + info.d + '</p>';
+  });
+});
+
+/* ================= TEST INTERACTIVO ================= */
+const quizData = [
+  {q:'¿Qué organismo define el estándar Ethernet (802.3)?', o:['ISO','IEEE','IETF','ITU-T'], ok:1, w:'El IEEE (Instituto de Ingenieros Eléctricos y Electrónicos) define la familia 802, incluido 802.3.'},
+  {q:'En CSMA/CD, si dos dispositivos transmiten a la vez…', o:['No ocurre nada: el medio es dúplex','Se produce una colisión: detienen la transmisión, esperan un tiempo aleatorio y reintentan','El conmutador elimina uno de los marcos sin aviso','Se conmuta automáticamente a fibra óptica'], ok:1, w:'Detección de colisiones: se detiene la transmisión, se espera un backoff aleatorio y se reintenta.'},
+  {q:'¿Qué medio físico permite 10 Gbps o más a distancias de varios kilómetros?', o:['Par trenzado Cat5','Cable coaxial','Fibra óptica','Par trenzado Cat5e'], ok:2, w:'La fibra óptica usa pulsos de luz: 10 Gbps o más a varios km, inmune a interferencias.'},
+  {q:'Distancia máxima del par trenzado Cat5e a 1 Gbps según el estándar:', o:['100 m','500 m','55 m','1 km'], ok:0, w:'Con Cat5e es posible transmitir hasta 1 Gbps a un máximo de 100 metros.'},
+  {q:'La versión 802.11a utiliza la banda de…', o:['2.4 GHz','5 GHz','60 GHz','Infrarrojos'], ok:1, w:'802.11a usa 5 GHz: más tasa de datos, menor cobertura que 2.4 GHz.'},
+  {q:'¿Qué protocolo de seguridad Wi-Fi ofrece hoy el nivel más alto?', o:['WEP','WPA','WPA2','WPA3'], ok:3, w:'WPA3 (2018) proporciona un nivel de seguridad superior a todos los anteriores.'},
+  {q:'El método de acceso al medio de Bluetooth (802.15) es…', o:['CSMA/CD','CSMA/CA','FHSS (salto de frecuencia)','Paso de testigo (token)'], ok:2, w:'FHSS: saltos rápidos entre frecuencias para minimizar interferencias y mejorar la seguridad.'},
+  {q:'¿Qué estándar define las redes inalámbricas WLAN (Wi-Fi)?', o:['IEEE 802.3','IEEE 802.11','IEEE 802.15','IEEE 802.16'], ok:1, w:'802.11 especifica las WLAN en las capas física y de enlace; 802.16 es WiMAX.'},
+  {q:'¿Qué versiones de 802.11 pueden trabajar en ambas bandas (2.4 y 5 GHz)?', o:['a y b','b y g','n, ac y ax','Solo la versión original'], ok:2, w:'802.11n, 802.11ac y 802.11ax pueden utilizar ambas bandas.'},
+  {q:'En la capa de enlace, WLAN (802.11) emplea como método de acceso…', o:['CSMA/CA (evitación de colisiones)','CSMA/CD (detección de colisiones)','FDMA puro','ALOHA sin escucha'], ok:0, w:'Por radio no se pueden detectar colisiones con fiabilidad: se evitan (CSMA/CA).'}
+];
+const quizForm = document.getElementById('quizForm');
+const quizResult = document.getElementById('quizResult');
+function renderQuiz(){
+  quizForm.innerHTML = '';
+  quizResult.className = 'quiz-result';
+  quizResult.innerHTML = '';
+  quizData.forEach(function(item, qi){
+    const box = document.createElement('div');
+    box.className = 'quiz-q';
+    box.dataset.q = qi;
+    let optsHtml = '';
+    item.o.forEach(function(op, oi){
+      optsHtml += '<label class="opt"><input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + op + '</span></label>';
+    });
+    box.innerHTML = '<h4><span class="qnum">P' + (qi+1) + '.</span> ' + item.q + '</h4>' + optsHtml + '<div class="why">💡 ' + item.w + '</div>';
+    quizForm.appendChild(box);
+  });
+}
+document.getElementById('quizSubmit').addEventListener('click', function(){
+  let score = 0;
+  quizData.forEach(function(item, qi){
+    const box = quizForm.querySelector('.quiz-q[data-q="' + qi + '"]');
+    const chosen = box.querySelector('input:checked');
+    const labels = box.querySelectorAll('.opt');
+    labels.forEach(function(lb){ lb.classList.remove('ok','bad'); });
+    labels[item.ok].classList.add('ok');
+    if(chosen){
+      const val = Number(chosen.value);
+      if(val === item.ok){ score++; }
+      else{ labels[val].classList.add('bad'); }
+    }
+    box.querySelector('.why').classList.add('show');
+    box.querySelectorAll('input').forEach(function(inp){ inp.disabled = true; });
+  });
+  let msg, color;
+  if(score >= 9){ msg = '🏆 ¡SOBRESALIENTE! Dominas los estándares como una auténtica Consultoría Tecnológica Senior.'; color = 'linear-gradient(135deg,#1a9e6e,#0e7a54)'; }
+  else if(score >= 5){ msg = '💪 NOTABLE / APROBADO: buen dominio del tema. Repasa las preguntas falladas (marcadas en rojo).'; color = 'linear-gradient(135deg,#1f6fb2,#155a92)'; }
+  else{ msg = '📚 INSUFICIENTE: vuelve a las secciones de Ethernet, WLAN y Bluetooth y reintenta el test.'; color = 'linear-gradient(135deg,#d64545,#a92f2f)'; }
+  quizResult.style.background = color;
+  quizResult.innerHTML = '<span class="score-big">' + score + ' / 10</span><br>' + msg;
+  quizResult.className = 'quiz-result show';
+  quizResult.scrollIntoView({behavior:'smooth', block:'center'});
+});
+document.getElementById('quizRetry').addEventListener('click', function(){
+  renderQuiz();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+renderQuiz();
+</script>
+</body>
+</html>
