@@ -1,1 +1,98 @@
+<!-- ================================================= PÁGINA 3: WLAN -->
+<section class="page" id="page-wlan">
+  <span class="kicker"><span class="dot"></span> Estándar IEEE 802.11</span>
+  <h1>WLAN / Wi-Fi: la red sin cables</h1>
+  <div class="grid-2" style="align-items:start">
+    <div>
+      <p class="lead">El estándar <strong>IEEE 802.11</strong> tiene en las redes inalámbricas un rol equivalente al de Ethernet en las cableadas: especifica cómo funcionan las <strong>WLAN</strong> en la <strong>capa de enlace de datos</strong> (con acceso al medio <strong>CSMA/CA</strong>, de evitación de colisiones) y en la <strong>capa física</strong> (tecnologías de transmisión de radio).</p>
+      <p>Los <strong>puntos de acceso</strong> (AP) actúan como puente entre la red cableada y los dispositivos inalámbricos, permitiéndoles acceder a los recursos de la red y potenciando la movilidad y la flexibilidad.</p>
+      <div class="note"><b>Ojo:</b> las señales inalámbricas pueden interceptarse con mayor facilidad que las transmitidas por cable, por eso 802.11 ha evolucionado también en <strong>seguridad</strong>: WEP → WPA → WPA2 → WPA3.</div>
+    </div>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 3: punto de acceso WLAN -->
+      <svg viewBox="0 0 640 320" role="img" aria-label="Ilustración: punto de acceso Wi-Fi con bandas 2.4 y 5 GHz">
+        <rect width="640" height="320" rx="20" fill="#eef4fb"/>
+        <ellipse cx="320" cy="52" rx="74" ry="18" fill="#0e3a5d"/>
+        <circle cx="320" cy="52" r="6" fill="#2fd4c0"/>
+        <path d="M250 78 A 70 70 0 0 0 390 78" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M272 74 A 48 48 0 0 0 368 74" stroke="#12b5a5" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M228 84 A 92 92 0 0 0 412 84" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round" opacity=".55"/>
+        <path d="M294 70 A 26 26 0 0 0 346 70" stroke="#12b5a5" stroke-width="5" fill="none" stroke-linecap="round" opacity=".6"/>
+        <path d="M300 100 C 240 150 200 170 168 208" stroke="#f2a33c" stroke-width="3" stroke-dasharray="6 7" fill="none"/>
+        <path d="M320 104 V210" stroke="#12b5a5" stroke-width="3" stroke-dasharray="6 7" fill="none"/>
+        <path d="M344 100 C 400 150 440 170 470 204" stroke="#f2a33c" stroke-width="3" stroke-dasharray="6 7" fill="none"/>
+        <g><rect x="128" y="208" width="86" height="54" rx="6" fill="#155a92"/><path d="M112 268 H230 L214 282 H128 Z" fill="#0e3a5d"/></g>
+        <g><rect x="298" y="210" width="44" height="80" rx="8" fill="#155a92"/><rect x="305" y="220" width="30" height="54" rx="4" fill="#eef4fb"/></g>
+        <g><rect x="446" y="204" width="66" height="86" rx="8" fill="#155a92"/><rect x="454" y="214" width="50" height="62" rx="4" fill="#eef4fb"/></g>
+        <circle cx="96" cy="86" r="26" fill="#fff3df" stroke="#f2a33c" stroke-width="2"/>
+        <path d="M86 86 A 10 10 0 0 1 106 86 M80 86 A 16 16 0 0 1 112 86" stroke="#f2a33c" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="552" cy="86" r="26" fill="#e2f7f4" stroke="#12b5a5" stroke-width="2"/>
+        <path d="M542 86 A 10 10 0 0 1 562 86 M536 86 A 16 16 0 0 1 568 86" stroke="#12b5a5" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
 
+  <div class="section">
+    <span class="kicker"><span class="dot"></span> Evolución del estándar</span>
+    <h2>Versiones de 802.11: de 1997 a hoy</h2>
+    <p>Cada versión se identifica con una letra añadida al final (802.11a, b, g, n, ac, ax); las dos últimas, <strong>ac</strong> y <strong>ax</strong>, son las más utilizadas en la actualidad.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Versión</th><th>Año</th><th>Banda de frecuencia</th><th>Velocidad máx. teórica</th><th>Comentario</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">802.11 (original)</td><td>1997</td><td>2.4 GHz</td><td>2 Mbps</td><td>El punto de partida del Wi-Fi.</td></tr>
+          <tr><td class="hl">802.11a</td><td>1999</td><td><strong>5 GHz</strong></td><td>54 Mbps</td><td>Más velocidad, menor cobertura.</td></tr>
+          <tr><td class="hl">802.11b</td><td>1999</td><td>2.4 GHz</td><td>11 Mbps</td><td>Popularizó el Wi-Fi doméstico.</td></tr>
+          <tr><td class="hl">802.11g</td><td>2003</td><td>2.4 GHz</td><td>54 Mbps</td><td>Velocidad de «a» en banda de 2.4 GHz.</td></tr>
+          <tr><td class="hl">802.11n (Wi-Fi 4)</td><td>2009</td><td><strong>2.4 y 5 GHz</strong></td><td>600 Mbps</td><td>MIMO: varias antenas simultáneas.</td></tr>
+          <tr><td class="hl">802.11ac (Wi-Fi 5)</td><td>2013</td><td>5 GHz (y 2.4)</td><td>≈ 1.3–6.9 Gbps</td><td>Muy usado hoy en routers domésticos.</td></tr>
+          <tr><td class="hl">802.11ax (Wi-Fi 6)</td><td>2021</td><td><strong>2.4 y 5 GHz</strong></td><td>≈ 9.6 Gbps</td><td>El más usado actualmente: eficiencia en alta densidad.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="sim-box">
+      <h3>📡 Comparador interactivo de bandas</h3>
+      <p style="font-size:.88rem;color:#9fc6e4">802.11b y g usan la banda de <strong>2.4 GHz</strong>; 802.11a usa <strong>5 GHz</strong>; n, ac y ax pueden usar ambas. La banda de 5 GHz permite mayor tasa de transmisión, pero con menor cobertura.</p>
+      <div class="chip-row no-print">
+        <button class="chip active" id="band24" data-band="24">2.4 GHz</button>
+        <button class="chip" id="band5" data-band="5">5 GHz</button>
+      </div>
+      <div class="band-stage">
+        <div class="coverage" id="covCircle"></div>
+        <div class="ap-dot">AP</div>
+      </div>
+      <div class="band-meter"><span style="width:74px">Velocidad</span><div class="bo-bar"><i id="speedFill" style="width:38%"></i></div></div>
+      <div class="band-meter"><span style="width:74px">Cobertura</span><div class="bo-bar"><i id="covFill" style="width:86%"></i></div></div>
+      <p class="caption" id="bandCaption" style="margin-top:10px">2.4 GHz: mayor cobertura y penetración de obstáculos, pero menor velocidad (11–54 Mbps en b/g) y más interferencias (microondas, otros Wi-Fi, Bluetooth).</p>
+    </div>
+    <div class="sim-box">
+      <h3>🔐 Línea de tiempo de seguridad Wi-Fi</h3>
+      <p style="font-size:.88rem;color:#9fc6e4">Pulsa cada protocolo para ver su ficha. Cada uno proporcionó un nivel de seguridad superior al anterior.</p>
+      <div class="sec-timeline no-print" style="margin-top:12px">
+        <button class="sec-btn active" data-sec="wep"><b>WEP</b><span>1997 · vulnerable</span></button>
+        <button class="sec-btn" data-sec="wpa"><b>WPA</b><span>2003 · transición</span></button>
+        <button class="sec-btn" data-sec="wpa2"><b>WPA2</b><span>2004 · AES</span></button>
+        <button class="sec-btn" data-sec="wpa3"><b>WPA3</b><span>2018 · actual</span></button>
+      </div>
+      <div class="sec-detail" id="secDetail">
+        <h4>WEP · Wired Equivalent Privacy (1997)</h4>
+        <p>Uno de los primeros protocolos de seguridad introducidos en 802.11. Se demostró que era <strong>vulnerable a varios tipos de ataques</strong> (claves estáticas y vectores de inicio débiles), por lo que hoy está completamente desaconsejado.</p>
+      </div>
+      <div class="note" style="margin-top:12px"><b>CSMA/CA:</b> en WLAN no se pueden detectar colisiones fiablemente por radio, así que se <em>evitan</em>: el nodo escucha, espera si el medio está ocupado y confirma la recepción de tramas.</div>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card">
+      <h3>✅ Ventajas de las WLAN</h3>
+      <p>• <strong>Movilidad y flexibilidad</strong>: conexión sin cables físicos desde cualquier punto cubierto.<br>• Instalación rápida y sin obra; fácil añadir dispositivos.<br>• Ideal para hogares, oficinas y espacios con muchos clientes (el AP gestiona y dirige el tráfico).</p>
+    </div>
+    <div class="card">
+      <h3>⚠️ Desafíos de las WLAN</h3>
+      <p>• <strong>Seguridad</strong>: la señal radiada se intercepta con más facilidad → cifrado WPA2/WPA3 imprescindible.<br>• <strong>Velocidad y fiabilidad</strong> inferiores al cable: interferencias, atenuación por obstáculos y medio compartido.<br>• Cobertura limitada por banda: 5 GHz alcanza menos distancia que 2.4 GHz.</p>
+    </div>
+  </div>
+</section>
