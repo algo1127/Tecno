@@ -1,1 +1,101 @@
+<!-- ================================================= PÁGINA 2: ETHERNET -->
+<section class="page" id="page-ethernet">
+  <span class="kicker"><span class="dot"></span> Estándar IEEE 802.3</span>
+  <h1>Ethernet: el rey de la red cableada</h1>
+  <div class="grid-2" style="align-items:start">
+    <div>
+      <p class="lead">El estándar <strong>IEEE 802.3</strong>, definido por el IEEE, especifica las características técnicas de la tecnología <strong>Ethernet</strong>: el <strong>método de acceso al medio (MAC)</strong> y las características <strong>físicas</strong> de la red —tipos de cableado, distancias máximas entre dispositivos y velocidades de transmisión permitidas—.</p>
+      <p>Ethernet se utiliza ampliamente en redes de área local (<strong>LAN</strong>), aunque también aparece en MAN y WAN. Su filosofía: un <strong>medio compartido</strong> donde varias estaciones conviven gracias al protocolo <strong>CSMA/CD</strong>.</p>
+      <div class="note"><b>Idea clave:</b> en Ethernet moderna con conmutadores (switch) y enlaces <em>full-duplex</em> las colisiones desaparecen, pero CSMA/CD sigue siendo la base histórica y conceptual del estándar.</div>
+    </div>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 2: switch Ethernet -->
+      <svg viewBox="0 0 640 300" role="img" aria-label="Ilustración: conmutador Ethernet con cables de par trenzado">
+        <rect width="640" height="300" rx="20" fill="#eef4fb"/>
+        <rect x="110" y="120" width="420" height="86" rx="14" fill="#0e3a5d"/>
+        <rect x="110" y="120" width="420" height="20" rx="10" fill="#155a92"/>
+        <g>
+          <rect x="132" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="182" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="232" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="282" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#2fd4c0" stroke-width="2"/>
+          <rect x="332" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#f2a33c" stroke-width="2"/>
+          <rect x="382" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#f2a33c" stroke-width="2"/>
+          <rect x="432" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#4da3ff" stroke-width="2"/>
+          <rect x="482" y="150" width="34" height="28" rx="4" fill="#0b2a44" stroke="#4da3ff" stroke-width="2"/>
+        </g>
+        <g fill="#2fd4c0">
+          <circle cx="149" cy="190" r="4"><animate attributeName="opacity" values="1;.15;1" dur="1.1s" repeatCount="indefinite"/></circle>
+          <circle cx="199" cy="190" r="4"><animate attributeName="opacity" values="1;.15;1" dur="1.4s" repeatCount="indefinite"/></circle>
+          <circle cx="249" cy="190" r="4"><animate attributeName="opacity" values="1;.15;1" dur=".9s" repeatCount="indefinite"/></circle>
+          <circle cx="299" cy="190" r="4" fill="#f2a33c"><animate attributeName="opacity" values="1;.15;1" dur="1.6s" repeatCount="indefinite"/></circle>
+          <circle cx="349" cy="190" r="4" fill="#f2a33c"><animate attributeName="opacity" values="1;.15;1" dur="1.2s" repeatCount="indefinite"/></circle>
+          <circle cx="449" cy="190" r="4" fill="#4da3ff"><animate attributeName="opacity" values="1;.15;1" dur="1s" repeatCount="indefinite"/></circle>
+        </g>
+        <path d="M149 178 V240 H90 V262" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M249 178 V250 H210 V268" stroke="#2fd4c0" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M349 178 V244 H330 V266" stroke="#4da3ff" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M449 178 V252 H500 V270" stroke="#f2a33c" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <g fill="#155a92">
+          <rect x="70" y="262" width="42" height="26" rx="5"/><rect x="190" y="268" width="42" height="26" rx="5"/>
+          <rect x="310" y="266" width="42" height="26" rx="5"/><rect x="480" y="270" width="42" height="26" rx="5"/>
+        </g>
+        <path d="M60 60 H180 V96" stroke="#c9dcee" stroke-width="2" fill="none"/><circle cx="60" cy="60" r="4" fill="#1f6fb2"/>
+        <path d="M580 60 H470 V96" stroke="#c9dcee" stroke-width="2" fill="none"/><circle cx="580" cy="60" r="4" fill="#f2a33c"/>
+      </svg>
+    </div>
+  </div>
 
+  <div class="section">
+    <div class="sim-box">
+      <h3>⚡ Simulación interactiva: CSMA/CD <small>· Carrier Sense Multiple Access with Collision Detection</small></h3>
+      <p style="font-size:.9rem;color:#9fc6e4">Cuando un dispositivo quiere transmitir, <strong>escucha el medio</strong>. Si está libre, transmite. Si dos transmiten a la vez se produce una <strong>colisión</strong>: ambos detienen la transmisión, esperan un <strong>tiempo aleatorio</strong> (backoff binario) y reintentan.</p>
+      <div class="stage" id="csmaStage">
+        <div class="medium"></div>
+        <div class="node node-a"><span class="node-dot">A</span><small>Estación A</small></div>
+        <div class="node node-b"><span class="node-dot">B</span><small>Estación B</small></div>
+        <div class="packet pk-a" id="pkA">A</div>
+        <div class="packet pk-b" id="pkB">B</div>
+        <div class="burst" id="csmaBurst">💥</div>
+      </div>
+      <div class="backoff no-print" id="backoffBox" hidden>
+        <div class="bo-row"><label>Espera A</label><div class="bo-bar"><i id="boA"></i></div><b id="boAv">—</b></div>
+        <div class="bo-row"><label>Espera B</label><div class="bo-bar"><i id="boB"></i></div><b id="boBv">—</b></div>
+      </div>
+      <p class="caption" id="csmaCaption">Pulsa «Simular» para ver el ciclo completo: escucha → transmisión → colisión → backoff → retransmisión.</p>
+      <div class="sim-controls no-print">
+        <button class="btn btn-accent" id="csmaPlay">▶ Simular CSMA/CD</button>
+        <button class="btn btn-ghost" id="csmaReset" style="background:#123f6b;color:#dbe9f5;border-color:#1d5c8f">⟲ Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="kicker"><span class="dot"></span> Capa física de Ethernet</span>
+    <h2>Cableado, distancias y velocidades</h2>
+    <p>El estándar define varios tipos de cableado, cada uno con sus propias características de distancia máxima y velocidad de transmisión.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Medio físico</th><th>Velocidad máx. orientativa</th><th>Distancia máx.</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">Coaxial</td><td>10 Mbps</td><td>185–500 m</td><td><strong>Obsoleto</strong>: base de la antigua Ethernet 10Base2 (topología de bus).</td></tr>
+          <tr><td class="hl">Par trenzado Cat5</td><td>100 Mbps</td><td>100 m</td><td>UTP/STP; el equilibrio rendimiento-coste que popularizó Ethernet.</td></tr>
+          <tr><td class="hl">Par trenzado Cat5e</td><td><strong>1 Gbps</strong></td><td><strong>100 m</strong></td><td>Dato del estándar: hasta 1 Gbps a 100 m como máximo.</td></tr>
+          <tr><td class="hl">Par trenzado Cat6</td><td>10 Gbps</td><td>55 m</td><td>Para enlaces cortos de alta velocidad en armarios de red.</td></tr>
+          <tr><td class="hl">Fibra óptica</td><td><strong>10 Gbps o más</strong></td><td>Varios km</td><td>Inmune a interferencias electromagnéticas; troncales y WAN.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section grid-2">
+    <div class="card">
+      <h3>✅ Ventajas de Ethernet (802.3)</h3>
+      <p>• Alto rendimiento y <strong>latencia mínima</strong> frente a medios inalámbricos.<br>• Gran fiabilidad: inmune a interferencias de radio (salvo coaxial sin blindaje).<br>• Tecnología madura, económica y estandarizada: interoperabilidad total.<br>• Escalabilidad: de 10 Mbps a 100 Gbps con el mismo concepto de trama.</p>
+    </div>
+    <div class="card">
+      <h3>⚠️ Desventajas y límites</h3>
+      <p>• Requiere <strong>cableado físico</strong>: obra, canaletas y mantenimiento.<br>• Sin <strong>movilidad</strong>: un dispositivo cableado no puede roaming.<br>• Distancia limitada por segmento (100 m en par trenzado): exige repetidores o switch intermedios.<br>• Medio compartido clásico: colisiones que CSMA/CD debe gestionar.</p>
+    </div>
+  </div>
+</section>
