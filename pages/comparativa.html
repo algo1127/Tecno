@@ -1,1 +1,64 @@
+<!-- ================================================= PÁGINA 5: COMPARATIVA -->
+<section class="page" id="page-comparativa">
+  <span class="kicker"><span class="dot"></span> Estudio comparativo</span>
+  <h1>Los tres estándares, cara a cara</h1>
+  <p class="lead">Tabla comparativa de rigor técnico: ámbito, medio, acceso, rendimiento y uso típico de cada estándar de la familia IEEE 802.</p>
+  <div class="section" style="margin-top:20px">
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Criterio</th><th>IEEE 802.3 · Ethernet</th><th>IEEE 802.11 · WLAN (Wi-Fi)</th><th>IEEE 802.15 · Bluetooth</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">Tipo de red</td><td>LAN cableada (también MAN/WAN)</td><td>WLAN inalámbrica local</td><td>WPAN (área personal)</td></tr>
+          <tr><td class="hl">Medio</td><td>Par trenzado, fibra óptica, coaxial (obsoleto)</td><td>Ondas de radio 2.4 / 5 GHz</td><td>Ondas de radio 2.4 GHz</td></tr>
+          <tr><td class="hl">Acceso al medio</td><td><strong>CSMA/CD</strong> (detección de colisiones)</td><td><strong>CSMA/CA</strong> (evitación de colisiones)</td><td><strong>FHSS</strong> (salto de frecuencia)</td></tr>
+          <tr><td class="hl">Velocidad orientativa</td><td>1 Gbps (Cat5e) → 10 Gbps+ (fibra)</td><td>11 Mbps (b) → 9.6 Gbps (ax)</td><td>1–3 Mbps (moderada)</td></tr>
+          <tr><td class="hl">Alcance típico</td><td>100 m por segmento (par trenzado)</td><td>Decenas de metros por AP</td><td>~10 m</td></tr>
+          <tr><td class="hl">Capas OSI</td><td>1 (física) y 2 (enlace: MAC+LLC)</td><td>1 y 2</td><td>1 y 2</td></tr>
+          <tr><td class="hl">Seguridad destacada</td><td>Medio físico cerrado; 802.1X</td><td>WEP → WPA → WPA2 → <strong>WPA3</strong></td><td>Emparejamiento con autenticación mutua</td></tr>
+          <tr><td class="hl">Uso típico</td><td>Oficinas, datacenters, troncales</td><td>Hogares, oficinas, movilidad</td><td>Audio, periféricos, wearables, archivos</td></tr>
+          <tr><td class="hl">Tolerancia a fallos</td><td>Alta: enlaces dedicados por switch</td><td>Media: depende del AP central</td><td>Alta ante interferencias gracias a FHSS</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
+  <div class="section">
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 5: tres zonas comparadas -->
+      <svg viewBox="0 0 760 260" role="img" aria-label="Ilustración: LAN cableada, WLAN inalámbrica y WPAN personal comparadas">
+        <rect width="760" height="260" rx="20" fill="#eef4fb"/>
+        <line x1="258" y1="20" x2="258" y2="240" stroke="#dce6f2" stroke-width="3"/>
+        <line x1="506" y1="20" x2="506" y2="240" stroke="#dce6f2" stroke-width="3"/>
+        <rect x="30" y="26" width="90" height="16" rx="8" fill="#1f6fb2"/><rect x="280" y="26" width="90" height="16" rx="8" fill="#f2a33c"/><rect x="528" y="26" width="90" height="16" rx="8" fill="#4da3ff"/>
+        <g><rect x="90" y="96" width="120" height="34" rx="8" fill="#0e3a5d"/><g fill="#2fd4c0"><circle cx="110" cy="113" r="4"/><circle cx="130" cy="113" r="4"/><circle cx="150" cy="113" r="4"/></g>
+        <path d="M110 130 V176 H70 V196" stroke="#1f6fb2" stroke-width="4" fill="none"/><path d="M150 130 V180 H190 V200" stroke="#1f6fb2" stroke-width="4" fill="none"/><path d="M180 130 V168 H226 V192" stroke="#1f6fb2" stroke-width="4" fill="none"/>
+        <rect x="52" y="196" width="38" height="26" rx="5" fill="#155a92"/><rect x="172" y="200" width="38" height="26" rx="5" fill="#155a92"/><rect x="208" y="192" width="38" height="26" rx="5" fill="#155a92"/></g>
+        <g><rect x="352" y="80" width="96" height="26" rx="12" fill="#0e3a5d"/><circle cx="400" cy="93" r="4" fill="#2fd4c0"/>
+        <path d="M368 116 A 34 34 0 0 0 436 116" stroke="#f2a33c" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M352 124 A 50 50 0 0 0 452 124" stroke="#f2a33c" stroke-width="4" fill="none" stroke-linecap="round" opacity=".5"/>
+        <path d="M378 132 C 340 160 320 172 300 190" stroke="#f2a33c" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <path d="M424 132 C 456 160 470 172 486 188" stroke="#f2a33c" stroke-width="3" stroke-dasharray="5 6" fill="none"/>
+        <rect x="282" y="190" width="40" height="28" rx="5" fill="#155a92"/><rect x="470" y="188" width="26" height="44" rx="6" fill="#155a92"/></g>
+        <g><circle cx="630" cy="150" r="76" fill="none" stroke="#4da3ff" stroke-width="2" stroke-dasharray="4 8" opacity=".7"/>
+        <rect x="612" y="120" width="34" height="60" rx="7" fill="#155a92"/><rect x="618" y="128" width="22" height="40" rx="3" fill="#eef4fb"/>
+        <path d="M560 96 A 18 18 0 0 1 596 96" stroke="#0e3a5d" stroke-width="5" fill="none"/><rect x="554" y="94" width="9" height="16" rx="4" fill="#0e3a5d"/><rect x="593" y="94" width="9" height="16" rx="4" fill="#0e3a5d"/>
+        <rect x="676" y="86" width="26" height="30" rx="6" fill="#0e3a5d"/><rect x="682" y="94" width="14" height="14" rx="3" fill="#4da3ff"/>
+        <ellipse cx="688" cy="196" rx="12" ry="17" fill="#0e3a5d"/></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="kicker"><span class="dot"></span> Entre otros…</span>
+    <h2>Otros estándares de la familia IEEE 802</h2>
+    <div class="grid-3">
+      <article class="card"><span class="tag">802.1</span><h3>Arquitectura de red</h3><p>Define la arquitectura global, la gestión y la interconexión de redes 802 (puentes, conmutación VLAN).</p></article>
+      <article class="card"><span class="tag">802.2</span><h3>LLC · Control Lógico de Enlace</h3><p>Subcapa superior de enlace común a todos los 802: multiplexa protocolos y controla el flujo lógico.</p></article>
+      <article class="card"><span class="tag">802.4</span><h3>Token Bus</h3><p>Red en bus con paso de testigo: acceso determinista usado en entornos industriales.</p></article>
+      <article class="card"><span class="tag">802.5</span><h3>Token Ring</h3><p>Red en anillo con token circulante (IBM): sin colisiones, acceso por turno.</p></article>
+      <article class="card"><span class="tag">802.6</span><h3>MAN · DQDB</h3><p>Redes de área metropolitana: doble bus con transferencia distribuida de colas.</p></article>
+      <article class="card"><span class="tag">802.16</span><h3>WiMAX</h3><p>Banda ancha inalámbrica metropolitana: cobertura de varios kilómetros (puente entre MAN y WWAN).</p></article>
+    </div>
+    <div class="note-blue" style="margin-top:20px"><b>Relación con los modelos:</b> en el <strong>modelo OSI</strong>, todos estos estándares viven en las capas <strong>física (1)</strong> y <strong>enlace (2)</strong>; en el <strong>modelo TCP/IP</strong> equivalen a la <strong>capa de acceso a la red</strong>. Por encima trabajan IP, TCP/UDP y las aplicaciones (HTTP, SMTP, FTP…), igual que estudiamos en los temas 8 y 9.</div>
+  </div>
+</section>
