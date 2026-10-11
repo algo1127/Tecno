@@ -1,1 +1,34 @@
+<!-- ================================================= PÁGINA 6: TEST -->
+<section class="page" id="page-test">
+  <span class="kicker"><span class="dot"></span> Autoevaluación</span>
+  <h1>Test interactivo del Tema 10</h1>
+  <div class="grid-2" style="align-items:center;margin-bottom:24px">
+    <p class="lead">10 preguntas sobre IEEE 802.3, 802.11 y 802.15. Al corregir verás cada acierto en verde, cada error en rojo y su explicación. ¡Demuestra el nivel de tu consultoría!</p>
+    <div class="hero-art">
+      <!-- ILUSTRACIÓN 6: test -->
+      <svg viewBox="0 0 480 240" role="img" aria-label="Ilustración: estudiante haciendo un test online sobre redes">
+        <rect width="480" height="240" rx="18" fill="#eef4fb"/>
+        <rect x="150" y="46" width="180" height="112" rx="10" fill="#0e3a5d"/>
+        <path d="M128 168 H352 L332 186 H148 Z" fill="#155a92"/>
+        <rect x="166" y="62" width="110" height="8" rx="4" fill="#eef4fb" opacity=".85"/>
+        <g><circle cx="172" cy="88" r="6" fill="#1a9e6e"/><rect x="186" y="84" width="90" height="7" rx="3.5" fill="#9fc6e4"/></g>
+        <g><circle cx="172" cy="108" r="6" fill="#d64545"/><rect x="186" y="104" width="76" height="7" rx="3.5" fill="#9fc6e4"/></g>
+        <g><circle cx="172" cy="128" r="6" fill="#f2a33c"/><rect x="186" y="124" width="98" height="7" rx="3.5" fill="#9fc6e4"/></g>
+        <path d="M169 88 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M170 106 l5 5 M175 106 l-5 5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="90" cy="70" r="20" fill="#fff3df" stroke="#f2a33c" stroke-width="2"/><path d="M84 64 a6 6 0 1 1 9 5 v4" stroke="#8a5a10" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="93" cy="79" r="2.4" fill="#8a5a10"/>
+        <circle cx="398" cy="84" r="20" fill="#e8f7f0" stroke="#1a9e6e" stroke-width="2"/><path d="M390 84 l6 6 l11 -12" stroke="#1a9e6e" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <g stroke="#4da3ff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M392 168 V192 M392 168 L399 174 L385 186 M392 192 L399 186 L385 174"/></g>
+        <path d="M60 190 A 22 22 0 0 1 104 190" stroke="#1f6fb2" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>
+      </svg>
+    </div>
+  </div>
 
+  <form id="quizForm" novalidate></form>
+  <div class="cta-row no-print">
+    <button type="button" class="btn btn-primary" id="quizSubmit">✔ Corregir test</button>
+    <button type="button" class="btn btn-ghost" id="quizRetry">⟲ Reintentar</button>
+    <button type="button" class="btn btn-accent" onclick="window.print()">⬇ Guardar minisitio en PDF</button>
+  </div>
+  <div class="quiz-result" id="quizResult"></div>
+</section>
