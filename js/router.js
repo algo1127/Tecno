@@ -19,6 +19,16 @@ async function loadPage(pageId) {
         // Inject it into the empty <main> tag!
         mainContent.innerHTML = html;
 
+                // Inject it into the empty <main> tag!
+        mainContent.innerHTML = html;
+
+        // 👇 NEW: hand the "active" key to the page we just injected
+        const injectedPage = mainContent.querySelector('.page');
+        if (injectedPage) injectedPage.classList.add('active');
+        // 👆
+
+        if (pageId === 'ethernet') initCsma();
+
         // Update the active class on the navigation links (the orange highlight)
         navLinks.forEach(link => {
             link.classList.toggle('active', link.dataset.page === pageId);
