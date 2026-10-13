@@ -16,9 +16,6 @@ async function loadPage(pageId) {
         // Get the text from the file
         const html = await response.text();
 
-        // Inject it into the empty <main> tag!
-        mainContent.innerHTML = html;
-
                 // Inject it into the empty <main> tag!
         mainContent.innerHTML = html;
 
@@ -27,8 +24,10 @@ async function loadPage(pageId) {
         if (injectedPage) injectedPage.classList.add('active');
         // 👆
 
+        // 👇 AUTOMATIC TRIGGERS FOR OUR MODULES 👇
         if (pageId === 'ethernet') initCsma();
         if (pageId === 'bluetooth') initFhss();   // <--- ADD THIS LINE!
+        // 👆
 
         // Update the active class on the navigation links (the orange highlight)
         navLinks.forEach(link => {
