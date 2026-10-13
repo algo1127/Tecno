@@ -28,6 +28,7 @@ async function loadPage(pageId) {
         // 👆
 
         if (pageId === 'ethernet') initCsma();
+        if (pageId === 'bluetooth') initFhss();   // <--- ADD THIS LINE!
 
         // Update the active class on the navigation links (the orange highlight)
         navLinks.forEach(link => {
