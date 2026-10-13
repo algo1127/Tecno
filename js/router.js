@@ -54,3 +54,15 @@ window.addEventListener('popstate', () => {
     const hash = location.hash.replace('#', '') || 'inicio';
     loadPage(hash);
 });
+
+// 5. INTERNAL LINKS (CTAs inside pages + footer links) via Event Delegation
+document.addEventListener('click', function(e) {
+    // Find the closest clicked element that is a hash link (or null)
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;                                   // not a link? ignore
+    if (link.classList.contains('nav-link')) return;     // navbar already handled
+    const pageId = link.getAttribute('href').slice(1);
+    if (!pageId) return;                                 // bare "#" ? ignore
+    e.preventDefault();
+    loadPage(pageId);
+});
