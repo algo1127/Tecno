@@ -26,7 +26,8 @@ async function loadPage(pageId) {
 
         // 👇 AUTOMATIC TRIGGERS FOR OUR MODULES 👇
         if (pageId === 'ethernet') initCsma();
-        if (pageId === 'bluetooth') initFhss();   // <--- ADD THIS LINE!
+        if (pageId === 'bluetooth') initFhss();
+        if (pageId === 'wlan') initWlan();// <--- ADD THIS LINE!
         // 👆
 
         // Update the active class on the navigation links (the orange highlight)
