@@ -1,6 +1,7 @@
 // js/sim-fhss.js · Bluetooth frequency-hopping module
 
 function initFhss() {
+    if (!document.getElementById('fhssGrid')) return;
     /* ================= SIMULADOR FHSS (BLUETOOTH) ================= */
 const fhssChannels = [12, 45, 78, 23, 67, 34, 56, 1, 70, 29];
 const fhssGrid = document.getElementById('fhssGrid');
