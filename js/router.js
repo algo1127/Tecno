@@ -28,6 +28,7 @@ async function loadPage(pageId) {
         if (pageId === 'ethernet') initCsma();
         if (pageId === 'bluetooth') initFhss();
         if (pageId === 'wlan') initWlan();// <--- ADD THIS LINE!
+        if (pageId === 'test') initQuiz();
         // 👆
 
         // Update the active class on the navigation links (the orange highlight)
