@@ -192,3 +192,17 @@ footer a:hover{text-decoration:underline}
   .caption,.readout{color:#000;background:#fff;border-color:#bbb}
 }
 
+
+/* ---------- ICONOS SVG ---------- */
+.icon{
+  width:1.15em;
+  height:1.15em;
+  display:inline-block;
+  vertical-align:-0.22em;
+  margin-right:.4em;
+}
+.icon-chip .icon{
+  width:26px;
+  height:26px;
+  margin-right:0;
+}
