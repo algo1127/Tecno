@@ -1,85 +1,251 @@
-// js/sim-csma.js
-
+/**
+ * Enhanced CSMA/CD Simulation
+ * Features: Real Exponential Backoff, AbortController for clean cancellation, 
+ * and Carrier Sense interruption logic.
+ */
 function initCsma() {
-    // GUARD CLAUSE: If the Ethernet page isn't loaded, stop immediately!
-    const csmaStage = document.getElementById('csmaStage');
-    if (!csmaStage) return; 
+    const stage = document.getElementById('csmaStage');
+    if (!stage) return;
 
-    const pkA = document.getElementById('pkA');
-    const pkB = document.getElementById('pkB');
-    const csmaBurst = document.getElementById('csmaBurst');
-    const csmaCaption = document.getElementById('csmaCaption');
-    const backoffBox = document.getElementById('backoffBox');
-    const boA = document.getElementById('boA');
-    const boB = document.getElementById('boB');
-    const boAv = document.getElementById('boAv');
-    const boBv = document.getElementById('boBv');
-    
-    let csmaRunning = false;
-    let csmaToken = 0;
-    
-    function sleepMs(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
-    
-    function placePacket(el, leftPct, durMs){
-      el.style.transition = 'none';
-      void el.offsetWidth;
-      el.style.transition = 'left ' + durMs + 'ms linear';
-      el.style.left = leftPct + '%';
+    // 1. DOM Caching
+    const dom = {
+        stage,
+        pkA: document.getElementById('pkA'),
+        pkB: document.getElementById('pkB'),
+        burst: document.getElementById('csmaBurst'),
+        caption: document.getElementById('csmaCaption'),
+        backoffBox: document.getElementById('backoffBox'),
+        boA: document.getElementById('boA'),
+        boB: document.getElementById('boB'),
+        boAv: document.getElementById('boAv'),
+        boBv: document.getElementById('boBv'),
+        playBtn: document.getElementById('csmaPlay'),
+        resetBtn: document.getElementById('csmaReset')
+    };
+
+    if (!dom.pkA || !dom.pkB) return;
+
+    let abortController = null;
+    let isRunning = false;
+
+    // 2. Utility: Sleep with native AbortSignal support
+    const sleep = (ms, signal) => new Promise((resolve, reject) => {
+        if (signal?.aborted) return reject(signal.reason || new DOMException('Aborted', 'AbortError'));
+        
+        const timeout = setTimeout(() => {
+            signal?.removeEventListener('abort', onAbort);
+            resolve();
+        }, ms);
+        
+        const onAbort = () => {
+            clearTimeout(timeout);
+            reject(signal?.reason || new DOMException('Aborted', 'AbortError'));
+        };
+        signal?.addEventListener('abort', onAbort, { once: true });
+    });
+
+    // 3. Utility: Promise-based CSS Animation
+    const animatePacket = (el, targetLeft, duration) => {
+        return new Promise(resolve => {
+            el.style.transition = 'none';
+            void el.offsetWidth; // Trigger reflow
+            // Smoother easing than 'linear'
+            el.style.transition = `left ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+            el.style.left = `${targetLeft}%`;
+            
+            const onEnd = () => {
+                el.removeEventListener('transitionend', onEnd);
+                resolve();
+            };
+            el.addEventListener('transitionend', onEnd, { once: true });
+            // Fallback in case transitionend fails to fire
+            setTimeout(resolve, duration + 50);
+        });
+    };
+
+    // 4. Station Class (Encapsulates logic per node)
+    class Station {
+        constructor(id, el, barEl, valEl, startPos) {
+            this.id = id;
+            this.el = el;
+            this.bar = barEl;
+            this.val = valEl;
+            this.startPos = startPos;
+            this.attempts = 0;
+            this.slotTime = 100; // Visual ms per slot
+        }
+
+        reset() {
+            this.attempts = 0;
+            this.el.style.left = `${this.startPos}%`;
+            this.el.classList.remove('show');
+            this.bar.style.transition = 'width 0.3s ease';
+            this.bar.style.width = '0%';
+            this.val.textContent = '—';
+        }
+
+        // Real Ethernet Truncated Binary Exponential Backoff
+        calculateBackoff() {
+            this.attempts++;
+            if (this.attempts > 16) return -1; // Max attempts exceeded
+            const k = Math.min(this.attempts, 10);
+            const maxSlots = Math.pow(2, k) - 1;
+            const slots = Math.floor(Math.random() * (maxSlots + 1));
+            return slots * this.slotTime;
+        }
+
+        async animateBackoff(totalMs, signal) {
+            if (totalMs <= 0) {
+                this.bar.style.width = '0%';
+                this.val.textContent = '0 ms';
+                return;
+            }
+            const steps = 30;
+            const stepTime = totalMs / steps;
+            this.bar.style.transition = 'none'; // Disable CSS transition for JS stepped animation
+            
+            for (let i = 1; i <= steps; i++) {
+                await sleep(stepTime, signal);
+                const pct = (i / steps) * 100;
+                this.bar.style.width = `${pct}%`;
+                const remaining = Math.round(totalMs - (i * stepTime));
+                this.val.textContent = `${remaining} ms`;
+            }
+            this.val.textContent = '0 ms';
+            this.bar.style.width = '100%';
+        }
     }
-    
-    function resetCsma(){
-      csmaToken++;
-      csmaRunning = false;
-      csmaStage.classList.remove('listening','collision');
-      pkA.classList.remove('show'); pkB.classList.remove('show');
-      csmaBurst.classList.remove('show');
-      backoffBox.hidden = true;
-      boA.style.width = '0%'; boB.style.width = '0%';
-      boAv.textContent = '—'; boBv.textContent = '—';
-      placePacket(pkA, 9, 0); placePacket(pkB, 91, 0);
-      csmaCaption.textContent = 'Pulsa «Simular» para ver el ciclo completo: escucha → transmisión → colisión → backoff → retransmisión.';
+
+    const stationA = new Station('A', dom.pkA, dom.boA, dom.boAv, 9);
+    const stationB = new Station('B', dom.pkB, dom.boB, dom.boBv, 91);
+
+    const setCaption = (text) => { dom.caption.textContent = text; };
+
+    const resetSimulation = () => {
+        if (abortController) abortController.abort(); // Kill any running async loops
+        isRunning = false;
+        
+        dom.stage.classList.remove('listening', 'collision');
+        dom.burst.classList.remove('show');
+        dom.backoffBox.hidden = true;
+        
+        stationA.reset();
+        stationB.reset();
+        
+        dom.playBtn.disabled = false;
+        setCaption('Pulsa «Simular» para ver el ciclo completo: escucha → transmisión → colisión → backoff exponencial → retransmisión.');
+    };
+
+    // 5. Main Simulation Loop
+    async function runSimulation() {
+        if (isRunning) return;
+        resetSimulation();
+        isRunning = true;
+        abortController = new AbortController();
+        const { signal } = abortController;
+
+        dom.playBtn.disabled = true;
+
+        try {
+            // PHASE 1: CARRIER SENSE
+            dom.stage.classList.add('listening');
+            setCaption('1 · CARRIER SENSE: A y B escuchan el medio… está libre (sin portadora).');
+            await sleep(1500, signal);
+
+            // PHASE 2: MULTIPLE ACCESS
+            dom.stage.classList.remove('listening');
+            setCaption('2 · MULTIPLE ACCESS: A y B empiezan a transmitir a la vez por el medio compartido.');
+            dom.pkA.classList.add('show');
+            dom.pkB.classList.add('show');
+            
+            // Animate to center (simulating propagation and collision point)
+            await Promise.all([
+                animatePacket(dom.pkA, 50, 1500),
+                animatePacket(dom.pkB, 50, 1500)
+            ]);
+
+            await sleep(200, signal); // Brief pause before collision
+
+            // PHASE 3: COLLISION DETECTION
+            dom.stage.classList.add('collision');
+            dom.burst.classList.add('show');
+            dom.pkA.classList.remove('show');
+            dom.pkB.classList.remove('show');
+            setCaption('3 · COLLISION DETECTION: ¡colisión! Las señales se solapan y ambos marcos se corrompen.');
+            await sleep(1500, signal);
+
+            dom.burst.classList.remove('show');
+            dom.stage.classList.remove('collision');
+
+            // PHASE 4: BACKOFF
+            dom.backoffBox.hidden = false;
+            setCaption('4 · BACKOFF EXPONENCIAL: cada estación calcula una espera aleatoria (Truncated Binary Exponential Backoff).');
+            
+            const backoffA = stationA.calculateBackoff();
+            const backoffB = stationB.calculateBackoff();
+
+            dom.boAv.textContent = `Objetivo: ${backoffA} ms`;
+            dom.boBv.textContent = `Objetivo: ${backoffB} ms`;
+
+            // Determine winner and loser
+            const first = backoffA <= backoffB ? stationA : stationB;
+            const second = backoffA <= backoffB ? stationB : stationA;
+            const tie = backoffA === backoffB;
+            
+            // Only animate the winner's backoff fully. 
+            // The loser will be interrupted by Carrier Sense!
+            if (first.id === 'A') {
+                 await stationA.animateBackoff(backoffA, signal);
+            } else {
+                 await stationB.animateBackoff(backoffB, signal);
+            }
+
+            // PHASE 5: RESOLUTION
+            if (tie) {
+                setCaption('⚠ EMPATE EN BACKOFF: Ambas eligieron el mismo tiempo. ¡Nueva colisión inevitable!');
+                dom.stage.classList.add('collision');
+                dom.burst.classList.add('show');
+                await sleep(2000, signal);
+                dom.burst.classList.remove('show');
+                dom.stage.classList.remove('collision');
+                setCaption('Las estaciones incrementarán su contador de intentos y calcularán un backoff mayor para el próximo intento.');
+            } else {
+                setCaption(`5 · RETRANSMISIÓN: ${first.id} terminó su backoff y transmite. ${second.id} detecta portadora (Carrier Sense) y aborta su backoff.`);
+                
+                // Visually interrupt the loser's backoff
+                second.bar.style.transition = 'width 0.5s ease';
+                second.bar.style.width = '0%';
+                second.val.textContent = 'INTERRUMPIDO';
+                
+                // Winner transmits
+                first.el.classList.add('show');
+                const targetPos = first === stationA ? 91 : 9;
+                await animatePacket(first.el, targetPos, 2000);
+                first.el.classList.remove('show');
+
+                setCaption(`✔ ÉXITO: ${first.id} entregó el marco. ${second.id} esperará a que el medio se libere para reintentar.`);
+                await sleep(1500, signal);
+            }
+
+        } catch (err) {
+            if (err.name !== 'AbortError') console.error('Simulation error:', err);
+        } finally {
+            isRunning = false;
+            dom.playBtn.disabled = false;
+        }
     }
+
+    // 6. Event Listeners
+    dom.playBtn.addEventListener('click', runSimulation);
+    dom.resetBtn.addEventListener('click', resetSimulation);
     
-    async function runCsma(){
-      if(csmaRunning) return;
-      resetCsma();
-      csmaRunning = true;
-      const myToken = csmaToken;
-      
-      csmaStage.classList.add('listening');
-      csmaCaption.textContent = '1 · CARRIER SENSE: A y B escuchan el medio… está libre (sin portadora).';
-      await sleepMs(1500); if(myToken !== csmaToken) return;
-      
-      csmaStage.classList.remove('listening');
-      csmaCaption.textContent = '2 · MULTIPLE ACCESS: A y B empiezan a transmitir a la vez por el medio compartido.';
-      pkA.classList.add('show'); pkB.classList.add('show');
-      placePacket(pkA, 50, 1700); placePacket(pkB, 50, 1700);
-      await sleepMs(1750); if(myToken !== csmaToken) return;
-      
-      csmaStage.classList.add('collision');
-      csmaBurst.classList.add('show');
-      pkA.classList.remove('show'); pkB.classList.remove('show');
-      csmaCaption.textContent = '3 · COLLISION DETECTION: ¡colisión! Las señales se solapan y ambos marcos se corrompen.';
-      await sleepMs(1400); if(myToken !== csmaToken) return;
-      
-      csmaBurst.classList.remove('show');
-      csmaStage.classList.remove('collision');
-      backoffBox.hidden = false;
-      csmaCaption.textContent = '4 · BACKOFF BINARIO: cada estación espera un tiempo aleatorio distinto antes de reintentar.';
-      boAv.textContent = '2 ms'; boBv.textContent = '6 ms';
-      requestAnimationFrame(function(){ boA.style.width = '30%'; boB.style.width = '78%'; });
-      await sleepMs(1600); if(myToken !== csmaToken) return;
-      
-      csmaCaption.textContent = '5 · B se abstiene (su temporizador es mayor); A retransmite y el marco llega completo ✅';
-      pkA.classList.add('show');
-      placePacket(pkA, 91, 1900);
-      await sleepMs(2000); if(myToken !== csmaToken) return;
-      
-      csmaCaption.textContent = '✔ FIN: así gestiona Ethernet (802.3) el medio compartido: escuchar, transmitir, detectar colisiones y reintentar con espera aleatoria.';
-      csmaRunning = false;
-    }
-    
-    document.getElementById('csmaPlay').addEventListener('click', runCsma);
-    document.getElementById('csmaReset').addEventListener('click', resetCsma);
-    resetCsma();
+    // Initial setup
+    resetSimulation();
+}
+
+// Auto-init safely
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCsma);
+} else {
+    initCsma();
 }
