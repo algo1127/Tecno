@@ -941,37 +941,54 @@ function initCsma(target) {
   try {
     ensureStyles();
     const root = target || document.getElementById('csmaRoot');
+    
     if (!root) {
       console.warn('[CSMA] No se encontró #csmaRoot. Añade <div id="csmaRoot"></div> en tu HTML.');
       return null;
     }
-    if (root.__csmaUI) return root.__csmaUI; // ya montado, no duplicar
+    
+    // Si ya está montado en este div, solo forzamos el redimensionado y salimos
+    if (root.__csmaUI) {
+      root.__csmaUI.resize();
+      return root.__csmaUI;
+    }
+    
     const ui = new CsmaUI(root);
     root.__csmaUI = ui;
-    setTimeout(() => ui.resize(), 80);
-    setTimeout(() => ui.resize(), 500);
+    
+    // Forzamos el cálculo de tamaño cuando el navegador haya pintado
+    requestAnimationFrame(() => ui.resize());
+    setTimeout(() => ui.resize(), 150);
+    
     return ui;
   } catch (err) {
-    console.error('[CSMA] ERROR:', err);
+    console.error('[CSMA] ERROR al inicializar:', err);
+    return null;
   }
 }
 
-function tryInit() {
-  if (global.__csmaInit) return;
+function tryAutoInit() {
+  if (window.__csmaInitDone) return;
   if (!document.body) return;
-  global.__csmaInit = true;
-  initCsma();
+  
+  // Solo auto-inicializamos si el div YA existe en el DOM (evita montajes fantasma)
+  if (document.getElementById('csmaRoot')) {
+    window.__csmaInitDone = true;
+    initCsma();
+  }
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', tryInit);
+  document.addEventListener('DOMContentLoaded', tryAutoInit);
 } else {
-  tryInit();
+  tryAutoInit();
 }
-window.addEventListener('load', tryInit);
 
-global.initCsma = initCsma;
-global.CsmaSim = CsmaSim;
+window.addEventListener('load', tryAutoInit);
+
+// Exponer globalmente para que tu router.js pueda llamarlo
+window.initCsma = initCsma;
+window.CsmaSim = CsmaSim;
 })(window);
 global.initCsma = initCsma;
 global.CsmaSim = CsmaSim;
