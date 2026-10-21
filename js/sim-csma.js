@@ -579,12 +579,13 @@ class CsmaUI {
   }
   loadScenario(key,silent){
     this.scenario=key;
+    this.sim.cfg.scenario=key;
     this.el.scenarios.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.scenario===key)));
     const sc=SCENARIOS[key];
     Object.assign(this.sim.cfg,sc.cfg);
     this.sim.recompute(); this.syncControls(); this.restart();
     if (!silent) this.play(); else this.updateFacts();
-  }
+}
   syncControls(){
     const el=this.el,c=this.sim.cfg;
     el.cStations.value=c.stations;el.oStations.value=c.stations+' est.';
