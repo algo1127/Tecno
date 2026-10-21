@@ -56,32 +56,7 @@
     <div class="sim-box">
       <h3>📡 Comparador interactivo de bandas</h3>
       <p style="font-size:.88rem;color:#9fc6e4">802.11b y g usan la banda de <strong>2.4 GHz</strong>; 802.11a usa <strong>5 GHz</strong>; n, ac y ax pueden usar ambas. La banda de 5 GHz permite mayor tasa de transmisión, pero con menor cobertura.</p>
-      <div class="chip-row no-print">
-        <button class="chip active" id="band24" data-band="24">2.4 GHz</button>
-        <button class="chip" id="band5" data-band="5">5 GHz</button>
-      </div>
-      <div class="band-stage">
-        <div class="coverage" id="covCircle"></div>
-        <div class="ap-dot">AP</div>
-      </div>
-      <div class="band-meter"><span style="width:74px">Velocidad</span><div class="bo-bar"><i id="speedFill" style="width:38%"></i></div></div>
-      <div class="band-meter"><span style="width:74px">Cobertura</span><div class="bo-bar"><i id="covFill" style="width:86%"></i></div></div>
-      <p class="caption" id="bandCaption" style="margin-top:10px">2.4 GHz: mayor cobertura y penetración de obstáculos, pero menor velocidad (11–54 Mbps en b/g) y más interferencias (microondas, otros Wi-Fi, Bluetooth).</p>
-    </div>
-    <div class="sim-box">
-      <h3>🔐 Línea de tiempo de seguridad Wi-Fi</h3>
-      <p style="font-size:.88rem;color:#9fc6e4">Pulsa cada protocolo para ver su ficha. Cada uno proporcionó un nivel de seguridad superior al anterior.</p>
-      <div class="sec-timeline no-print" style="margin-top:12px">
-        <button class="sec-btn active" data-sec="wep"><b>WEP</b><span>1997 · vulnerable</span></button>
-        <button class="sec-btn" data-sec="wpa"><b>WPA</b><span>2003 · transición</span></button>
-        <button class="sec-btn" data-sec="wpa2"><b>WPA2</b><span>2004 · AES</span></button>
-        <button class="sec-btn" data-sec="wpa3"><b>WPA3</b><span>2018 · actual</span></button>
-      </div>
-      <div class="sec-detail" id="secDetail">
-        <h4>WEP · Wired Equivalent Privacy (1997)</h4>
-        <p>Uno de los primeros protocolos de seguridad introducidos en 802.11. Se demostró que era <strong>vulnerable a varios tipos de ataques</strong> (claves estáticas y vectores de inicio débiles), por lo que hoy está completamente desaconsejado.</p>
-      </div>
-      <div class="note" style="margin-top:12px"><b>CSMA/CA:</b> en WLAN no se pueden detectar colisiones fiablemente por radio, así que se <em>evitan</em>: el nodo escucha, espera si el medio está ocupado y confirma la recepción de tramas.</div>
+<div id="wlanRoot"></div>
     </div>
   </div>
 
