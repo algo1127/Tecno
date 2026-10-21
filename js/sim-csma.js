@@ -116,7 +116,7 @@ const C_PROP = 2.0e8, SLOT_BITS = 512, JAM_BITS = 48, IFG_BITS = 96, MAX_TRY = 1
 const PALETTE = ['#4f9dff','#ff9440','#3ddc97','#e879f9','#ffd23d','#38d9f5','#a3e635','#fb7185'];
 const DEFAULTS = { stations:2, cableLen:1000, rateMbps:10, frameBytes:64, load:0.30, speed:30, scenario:'collision', spacetime:true };
 
-const $ = (id, r) => (r || document).getElementById(id);
+const $ = (id, r) => (r || document).querySelector('#' + id);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const fmt = (n, d) => Number(n).toFixed(d === undefined ? 1 : d);
 function fmtUs(us) {
