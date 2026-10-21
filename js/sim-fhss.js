@@ -1,6 +1,5 @@
 /* ==========================================================================
-   sim-fhss.js · Simulador de Saltos de Frecuencia (Bluetooth FHSS)
-   [Drop & Play Version - CSS incluido, inmune a CSS heredado]
+   sim-fhss.js · Bluetooth FHSS - Redesigned UI
    ========================================================================== */
 (function (global) {
 'use strict';
@@ -12,59 +11,211 @@ const CSS_STYLES = `
   --warn: #ffd23d; --bad: #ff5c5c;
   color: var(--txt); background: var(--bg);
   font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  padding: 20px; border-radius: 14px; max-width: 900px; margin: 0 auto;
+  padding: 20px; border-radius: 14px; max-width: 1000px; margin: 0 auto;
 }
 @media (prefers-color-scheme: light) {
   .fhss { --bg:#f5f8fc; --panel:#fff; --panel-2:#eef3f9; --line:#d6e0ec;
           --txt:#152232; --muted:#5b6f86; }
 }
 .fhss *, .fhss *::before, .fhss *::after { box-sizing: border-box; }
-.fhss__head { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:14px; }
-.fhss__head h2 { margin:0; font-size:1.25rem; }
+
+.fhss__head { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.fhss__head h2 { margin:0; font-size:1.25rem; color:var(--txt); }
 .fhss__head p { margin:2px 0 0; color:var(--muted); font-size:.85rem; }
-.fhss__transport { display:flex; gap:8px; flex-wrap:wrap; }
+.fhss__transport { display:flex; gap:8px; }
+
 .fhss .btn {
   appearance:none; border:1px solid var(--line); background:var(--panel-2);
   color:var(--txt); padding:8px 14px; border-radius:9px; cursor:pointer;
-  font:600 .88rem/1 inherit;
+  font:600 .88rem/1 inherit; transition:all .15s;
 }
-.fhss .btn:hover { border-color:var(--accent); }
+.fhss .btn:hover { border-color:var(--accent); transform:translateY(-1px); }
 .fhss .btn--primary { background:var(--accent); border-color:var(--accent); color:#08131f; }
-.fhss__stage { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:14px; position:relative; overflow:hidden; }
-.fhss__devices { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; position:relative; }
-.fhss__device { text-align:center; z-index:2; }
-.fhss__icon { font-size:2.5rem; display:block; margin-bottom:4px; transition:transform .2s; }
-.fhss__device.active .fhss__icon { transform:scale(1.15); }
-.fhss__label { font-size:.8rem; color:var(--muted); font-weight:600; }
-.fhss__link { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:60%; height:4px; background:var(--line); border-radius:2px; z-index:1; overflow:hidden; }
-.fhss__link::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:var(--accent); transition:left .3s linear; }
-.fhss__link.tx::after { left:0; background:var(--ok); box-shadow:0 0 12px var(--ok); }
-.fhss__link.err::after { left0; background:var(--bad); box-shadow:0 0 12px var(--bad); }
-.fhss__grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(52px, 1fr)); gap:6px; margin-top:10px; }
-.fhss__cell {
-  background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
-  padding:8px 4px; text-align:center; font-size:.8rem; font-weight:600; color:var(--muted);
-  transition:all .2s ease; position:relative;
+.fhss .btn--primary:hover { filter:brightness(1.08); }
+
+.fhss__devices { 
+  display:grid; grid-template-columns:1fr auto 1fr; gap:40px; 
+  align-items:center; margin-bottom:30px; padding:30px 20px;
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  position:relative; overflow:hidden;
 }
-.fhss__cell .freq { display:block; font-size:.65rem; font-weight:400; opacity:.7; margin-top:2px; }
-.fhss__cell.active { background:var(--accent); border-color:var(--accent); color:#08131f; transform:scale(1.05); box-shadow:0 0 15px color-mix(in srgb, var(--accent) 40%, transparent); z-index:2; }
-.fhss__cell.noise { border-color:var(--bad); color:var(--bad); }
-.fhss__cell.active.noise { background:var(--bad); border-color:var(--bad); color:#fff; box-shadow:0 0 15px color-mix(in srgb, var(--bad) 40%, transparent); }
-.fhss__cell.active.noise::after { content:'⚠'; position:absolute; top:-6px; right:-6px; background:var(--bg); border-radius:50%; width:16px; height:16px; font-size:10px; line-height:16px; border:1px solid var(--bad); }
-.fhss__controls { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:14px; }
-.fhss__ctl { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
-.fhss__ctl label { display:flex; justify-content:space-between; font-size:.84rem; color:var(--muted); margin-bottom:6px; }
-.fhss__ctl output { font:600 .82rem/1 monospace; color:var(--txt); }
-.fhss input[type=range] { width:100%; accent-color:var(--accent); }
-.fhss__stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; }
-.fhss__stat { background:var(--panel-2); border:1px solid var(--line); border-radius:9px; padding:10px; text-align:center; }
-.fhss__stat b { display:block; font:700 1.3rem/1 monospace; color:var(--txt); }
-.fhss__stat span { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
-.fhss__stat--bad b { color:var(--bad); }
+
+.fhss__device { 
+  display:flex; flex-direction:column; align-items:center; gap:10px; 
+  z-index:2; transition:transform .3s ease;
+}
+.fhss__device.active { transform:scale(1.08); }
+.fhss__device.active .fhss__icon-wrap { 
+  box-shadow:0 0 30px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.fhss__icon-wrap {
+  width:80px; height:80px; border-radius:16px;
+  background:var(--panel-2); border:2px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  transition:all .3s ease; position:relative;
+}
+.fhss__device.active .fhss__icon-wrap { 
+  border-color:var(--accent); 
+  background:color-mix(in srgb, var(--accent) 15%, var(--panel-2));
+}
+
+.fhss__icon-wrap svg { 
+  width:48px; height:48px; 
+  fill:var(--muted); 
+  transition:fill .3s ease; 
+}
+.fhss__device.active .fhss__icon-wrap svg { 
+  fill:var(--accent); 
+  filter:drop-shadow(0 0 8px var(--accent));
+}
+
+.fhss__label { 
+  font-size:.85rem; font-weight:600; color:var(--muted); 
+  text-align:center;
+}
+.fhss__device.active .fhss__label { color:var(--accent); }
+
+.fhss__link {
+  position:absolute; top:50%; left:0; right:0; height:4px;
+  background:var(--line); transform:translateY(-50%);
+  z-index:1; border-radius:2px; overflow:hidden;
+}
+.fhss__link::after {
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background:linear-gradient(90deg, var(--ok), var(--accent));
+  transition:left .4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:0 0 20px var(--accent);
+}
+.fhss__link.tx::after { left:0; }
+.fhss__link.err::after { 
+  left:0; 
+  background:linear-gradient(90deg, var(--bad), var(--warn));
+  box-shadow:0 0 20px var(--bad);
+}
+
+.fhss__spectrum {
+  background:var(--panel); border:1px solid var(--line); 
+  border-radius:12px; padding:20px; margin-bottom:16px;
+}
+.fhss__spectrum-title {
+  font-size:.8rem; color:var(--muted); text-transform:uppercase;
+  letter-spacing:.05em; margin-bottom:12px; display:flex; justify-content:space-between;
+}
+.fhss__grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(60px, 1fr));
+  gap:8px;
+}
+.fhss__cell {
+  background:var(--panel-2); border:2px solid var(--line);
+  border-radius:8px; padding:10px 6px; text-align:center;
+  transition:all .25s ease; position:relative; cursor:default;
+}
+.fhss__cell:hover { transform:translateY(-2px); border-color:var(--muted); }
+.fhss__cell.active {
+  border-color:var(--accent);
+  background:color-mix(in srgb, var(--accent) 20%, var(--panel-2));
+  transform:scale(1.1);
+  box-shadow:0 0 25px color-mix(in srgb, var(--accent) 40%, transparent);
+  z-index:2;
+}
+.fhss__cell.active::before {
+  content:''; position:absolute; inset:0; border-radius:8px;
+  background:var(--accent); opacity:.1;
+  animation:pulse 1s ease-out;
+}
+@keyframes pulse {
+  0% { transform:scale(1); opacity:.3; }
+  100% { transform:scale(1.4); opacity:0; }
+}
+.fhss__cell.noise {
+  border-color:var(--bad);
+  background:color-mix(in srgb, var(--bad) 10%, var(--panel-2));
+}
+.fhss__cell.noise::after {
+  content:'⚡'; position:absolute; top:2px; right:2px;
+  font-size:10px; opacity:.6;
+}
+.fhss__cell.active.noise {
+  border-color:var(--bad);
+  background:color-mix(in srgb, var(--bad) 30%, var(--panel-2));
+  box-shadow:0 0 25px color-mix(in srgb, var(--bad) 40%, transparent);
+}
+.fhss__cell-num {
+  display:block; font-size:.75rem; font-weight:700;
+  color:var(--txt); margin-bottom:2px;
+}
+.fhss__cell.active .fhss__cell-num { color:#08131f; }
+.fhss__cell-freq {
+  display:block; font-size:.65rem; color:var(--muted);
+}
+.fhss__cell.active .fhss__cell-freq { color:#08131f; opacity:.8; }
+
+.fhss__controls {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:14px; margin-bottom:16px;
+}
+.fhss__ctl {
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:10px; padding:14px;
+}
+.fhss__ctl label {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:.84rem; color:var(--muted); margin-bottom:8px; font-weight:600;
+}
+.fhss__ctl output {
+  font:600 .85rem/1 monospace; color:var(--accent);
+  background:var(--panel-2); padding:4px 8px; border-radius:4px;
+}
+.fhss input[type=range] {
+  width:100%; accent-color:var(--accent); height:6px;
+  background:var(--line); border-radius:3px; outline:none;
+}
+.fhss input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:18px; height:18px;
+  background:var(--accent); border-radius:50%; cursor:pointer;
+  box-shadow:0 0 10px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.fhss__stats {
+  display:grid; grid-template-columns:repeat(3, 1fr);
+  gap:10px; margin-bottom:16px;
+}
+.fhss__stat {
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:10px; padding:14px; text-align:center;
+  transition:transform .2s;
+}
+.fhss__stat:hover { transform:translateY(-2px); }
+.fhss__stat b {
+  display:block; font:700 1.5rem/1 monospace;
+  margin-bottom:4px;
+}
+.fhss__stat span {
+  font-size:.7rem; color:var(--muted); text-transform:uppercase;
+  letter-spacing:.05em; font-weight:600;
+}
 .fhss__stat--ok b { color:var(--ok); }
-.fhss__readout { margin-top:14px; padding:12px; background:var(--panel-2); border-radius:8px; font-size:.9rem; color:var(--txt); border-left:3px solid var(--accent); min-height:3.5em; display:flex; align-items:center; }
-.fhss__readout[data-tone="bad"] { border-left-color:var(--bad); }
-.fhss__readout[data-tone="ok"] { border-left-color:var(--ok); }
+.fhss__stat--bad b { color:var(--bad); }
+.fhss__stat--accent b { color:var(--accent); }
+
+.fhss__readout {
+  padding:14px 16px; background:var(--panel); border-radius:10px;
+  font-size:.9rem; border-left:4px solid var(--accent);
+  min-height:3.5em; display:flex; align-items:center;
+  transition:all .3s;
+}
+.fhss__readout[data-tone="bad"] { 
+  border-left-color:var(--bad);
+  background:color-mix(in srgb, var(--bad) 8%, var(--panel));
+}
+.fhss__readout[data-tone="ok"] { 
+  border-left-color:var(--ok);
+  background:color-mix(in srgb, var(--ok) 8%, var(--panel));
+}
+.fhss__readout b { color:var(--accent); }
+.fhss__readout[data-tone="bad"] b { color:var(--bad); }
+.fhss__readout[data-tone="ok"] b { color:var(--ok); }
 `;
 
 let stylesInjected = false;
@@ -79,13 +230,13 @@ function ensureStyles() {
 
 class FhssSim {
   constructor() {
-    this.channels = 32; // 32 canales representativos (Bluetooth clásico usa 79, BLE usa 40)
-    this.baseFreq = 2402; // MHz
+    this.channels = 32;
+    this.baseFreq = 2402;
     this.sequence = this.generateSequence();
     this.hopIndex = -1;
     this.isPlaying = false;
-    this.hopRate = 400; // ms por salto
-    this.noiseLevel = 2; // Cantidad de canales con interferencia
+    this.hopRate = 400;
+    this.noiseLevel = 2;
     this.noiseChannels = new Set();
     this.stats = { hops: 0, success: 0, collisions: 0 };
     this.timer = null;
@@ -93,7 +244,6 @@ class FhssSim {
   }
 
   generateSequence() {
-    // Secuencia pseudoaleatoria (Fisher-Yates shuffle)
     const seq = Array.from({ length: this.channels }, (_, i) => i);
     for (let i = seq.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -141,19 +291,27 @@ class FhssSim {
       this.stats.success++;
     }
 
-    // Cambiar el ruido cada 8 saltos para simular interferencia dinámica
     if (this.hopIndex % 8 === 0) this.updateNoise();
 
-    return { ch, isNoise, freq: this.baseFreq + ch, hopNum: this.hopIndex + 1, total: this.channels };
+    return { 
+      ch, 
+      isNoise, 
+      freq: this.baseFreq + ch, 
+      hopNum: this.hopIndex + 1, 
+      total: this.channels 
+    };
   }
 }
+
+const ICON_MOBILE = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>`;
+const ICON_HEADSET = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg>`;
 
 const TPL = `
 <div class="fhss" id="fhssApp">
   <header class="fhss__head">
     <div>
       <h2>Bluetooth FHSS · Saltos de Frecuencia</h2>
-      <p>El emisor y receptor saltan sincronizados a 1600 saltos/segundo para esquivar interferencias.</p>
+      <p>El máster y slave saltan sincronizados por 32 canales a 1600 saltos/segundo para esquivar interferencias.</p>
     </div>
     <div class="fhss__transport">
       <button type="button" class="btn btn--primary" id="fhssPlay">▶ Iniciar</button>
@@ -161,17 +319,22 @@ const TPL = `
     </div>
   </header>
 
-  <div class="fhss__stage">
-    <div class="fhss__devices">
-      <div class="fhss__device" id="fhssTx">
-        <span class="fhss__icon">📱</span>
-        <span class="fhss__label">Máster (Tx)</span>
-      </div>
-      <div class="fhss__link" id="fhssLink"></div>
-      <div class="fhss__device" id="fhssRx">
-        <span class="fhss__icon">🎧</span>
-        <span class="fhss__label">Slave (Rx)</span>
-      </div
+  <div class="fhss__devices">
+    <div class="fhss__device" id="fhssTx">
+      <div class="fhss__icon-wrap">${ICON_MOBILE}</div>
+      <span class="fhss__label">Máster (Tx)</span>
+    </div>
+    <div class="fhss__link" id="fhssLink"></div>
+    <div class="fhss__device" id="fhssRx">
+      <div class="fhss__icon-wrap">${ICON_HEADSET}</div>
+      <span class="fhss__label">Slave (Rx)</span>
+    </div>
+  </div>
+
+  <div class="fhss__spectrum">
+    <div class="fhss__spectrum-title">
+      <span>Espectro 2.4 GHz</span>
+      <span style="color:var(--bad)"> = Interferencia</span>
     </div>
     <div class="fhss__grid" id="fhssGrid"></div>
   </div>
@@ -188,13 +351,22 @@ const TPL = `
   </div>
 
   <div class="fhss__stats">
-    <div class="fhss__stat"><b id="statHops">0</b><span>Saltos</span></div>
-    <div class="fhss__stat fhss__stat--ok"><b id="statOk">0</b><span>Exitosos</span></div>
-    <div class="fhss__stat fhss__stat--bad"><b id="statErr">0</b><span>Colisiones</span></div
+    <div class="fhss__stat fhss__stat--accent">
+      <b id="statHops">0</b>
+      <span>Saltos</span>
+    </div>
+    <div class="fhss__stat fhss__stat--ok">
+      <b id="statOk">0</b>
+      <span>Exitosos</span>
+    </div>
+    <div class="fhss__stat fhss__stat--bad">
+      <b id="statErr">0</b>
+      <span>Colisiones</span>
+    </div>
   </div>
 
   <div class="fhss__readout" id="fhssReadout" data-tone="info">
-    Pulsa <b>▶ Iniciar</b> para ver cómo el Máster y el Slave saltan sincronizados por el espectro.
+    Pulsa <b>▶ Iniciar</b> para ver los saltos de frecuencia sincronizados.
   </div>
 </div>
 `;
@@ -206,34 +378,24 @@ class FhssUI {
     this.sim = new FhssSim();
     
     this.el = {
-      play: document.getElementById('fhssPlay', root) || root.querySelector('#fhssPlay'),
-      reset: document.getElementById('fhssReset', root) || root.querySelector('#fhssReset'),
-      grid: document.getElementById('fhssGrid', root) || root.querySelector('#fhssGrid'),
-      readout: document.getElementById('fhssReadout', root) || root.querySelector('#fhssReadout'),
-      link: document.getElementById('fhssLink', root) || root.querySelector('#fhssLink'),
-      tx: document.getElementById('fhssTx', root) || root.querySelector('#fhssTx'),
-      rx: document.getElementById('fhssRx', root) || root.querySelector('#fhssRx'),
-      speed: document.getElementById('fhssSpeed', root) || root.querySelector('#fhssSpeed'),
-      speedOut: document.getElementById('fhssSpeedOut', root) || root.querySelector('#fhssSpeedOut'),
-      noise: document.getElementById('fhssNoise', root) || root.querySelector('#fhssNoise'),
-      noiseOut: document.getElementById('fhssNoiseOut', root) || root.querySelector('#fhssNoiseOut'),
-      statHops: document.getElementById('statHops', root) || root.querySelector('#statHops'),
-      statOk: document.getElementById('statOk', root) || root.querySelector('#statOk'),
-      statErr: document.getElementById('statErr', root) || root.querySelector('#statErr')
-    };
-
-    // Fallback seguro para querySelector si getElementById falla por scope
-    const $ = (id) => document.getElementById(id) || this.root.querySelector('#' + id);
-    this.el = {
-      play: $('fhssPlay'), reset: $('fhssReset'), grid: $('fhssGrid'),
-      readout: $('fhssReadout'), link: $('fhssLink'), tx: $('fhssTx'), rx: $('fhssRx'),
-      speed: $('fhssSpeed'), speedOut: $('fhssSpeedOut'), noise: $('fhssNoise'),
-      noiseOut: $('fhssNoiseOut'), statHops: $('statHops'), statOk: $('statOk'), statErr: $('statErr')
+      play: root.querySelector('#fhssPlay'),
+      reset: root.querySelector('#fhssReset'),
+      grid: root.querySelector('#fhssGrid'),
+      readout: root.querySelector('#fhssReadout'),
+      link: root.querySelector('#fhssLink'),
+      tx: root.querySelector('#fhssTx'),
+      rx: root.querySelector('#fhssRx'),
+      speed: root.querySelector('#fhssSpeed'),
+      speedOut: root.querySelector('#fhssSpeedOut'),
+      noise: root.querySelector('#fhssNoise'),
+      noiseOut: root.querySelector('#fhssNoiseOut'),
+      statHops: root.querySelector('#statHops'),
+      statOk: root.querySelector('#statOk'),
+      statErr: root.querySelector('#statErr')
     };
 
     this.buildGrid();
     this.bind();
-    this.updateReadout('Pulsa <b>▶ Iniciar</b> para ver los saltos de frecuencia.', 'info');
   }
 
   buildGrid() {
@@ -242,7 +404,10 @@ class FhssUI {
       const cell = document.createElement('div');
       cell.className = 'fhss__cell';
       cell.dataset.ch = i;
-      cell.innerHTML = `<span>Ch ${i}</span><span class="freq">${this.sim.baseFreq + i} MHz</span>`;
+      cell.innerHTML = `
+        <span class="fhss__cell-num">Ch ${i}</span>
+        <span class="fhss__cell-freq">${this.sim.baseFreq + i} MHz</span>
+      `;
       this.el.grid.appendChild(cell);
     }
     this.renderNoise();
@@ -314,16 +479,13 @@ class FhssUI {
   }
 
   animateHop(data) {
-    // Limpiar estado anterior
     this.el.grid.querySelectorAll('.fhss__cell').forEach(c => c.classList.remove('active'));
     
-    // Activar celda actual
     const cell = this.el.grid.querySelector(`.fhss__cell[data-ch="${data.ch}"]`);
     if (cell) cell.classList.add('active');
 
-    // Animar enlace
-    this.el.link.className = 'fhss__link'; // reset
-    void this.el.link.offsetWidth; // forzar reflow
+    this.el.link.className = 'fhss__link';
+    void this.el.link.offsetWidth;
     this.el.tx.classList.add('active');
     this.el.rx.classList.add('active');
 
@@ -336,14 +498,13 @@ class FhssUI {
     } else {
       this.el.link.classList.add('tx');
       this.updateReadout(
-        `✅ <b>Salto ${data.hopNum}/${data.total}</b> → Canal ${data.ch} (${data.freq} MHz). Medio libre, paquete entregado correctamente al Slave.`,
+        `✅ <b>Salto ${data.hopNum}/${data.total}</b> → Canal ${data.ch} (${data.freq} MHz). Medio libre, paquete entregado correctamente.`,
         'ok'
       );
     }
 
     this.updateStats();
 
-    // Quitar clase active de dispositivos después de la animación
     setTimeout(() => {
       this.el.tx.classList.remove('active');
       this.el.rx.classList.remove('active');
@@ -351,20 +512,10 @@ class FhssUI {
   }
 }
 
-// Sobrescribir el método step del simulador para conectar con la UI
-const originalStep = FhssSim.prototype.step;
-FhssSim.prototype.step = function(ui) {
-  const data = originalStep.call(this);
-  if (ui) ui.animateHop(data);
-  return data;
-};
-// Corregimos la referencia en el constructor para que use el UI
-// (Mejor enfoque: pasar el callback al start)
-
 function initFhss(target) {
   try {
     ensureStyles();
-    const root = target || document.getElementById('fhssRoot') || document.getElementById('fhssGrid')?.parentElement;
+    const root = target || document.getElementById('fhssRoot') || document.getElementById('fhssGrid')?.parentElement?.parentElement;
     if (!root) return null;
     if (root.__fhssUI) {
       root.__fhssUI.reset();
@@ -372,8 +523,6 @@ function initFhss(target) {
     }
     
     const ui = new FhssUI(root);
-    
-    // Parchear el step para que actualice la UI
     const sim = ui.sim;
     const origStep = sim.step.bind(sim);
     sim.step = function() {
@@ -383,6 +532,17 @@ function initFhss(target) {
     };
     
     root.__fhssUI = ui;
+    setTimeout(() => {
+      if (ui.el.grid) {
+        const cells = ui.el.grid.querySelectorAll('.fhss__cell');
+        if (cells.length > 0) {
+          const cellWidth = cells[0].offsetWidth;
+          const gap = 8;
+          ui.el.grid.style.gridTemplateColumns = `repeat(auto-fill, minmax(${Math.max(60, cellWidth)}px, 1fr))`;
+        }
+      }
+    }, 100);
+    
     return ui;
   } catch (err) {
     console.error('[FHSS] ERROR:', err);
