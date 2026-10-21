@@ -936,40 +936,16 @@ class CsmaUI {
   destroy(){cancelAnimationFrame(this.raf);if(this.ro)this.ro.disconnect();}
 }
 
-/* ── MONTAJE: esquiva el CSS heredado (.stage con altura fija/overflow) ──── */
-function legacyCleanup() {
-  ['csmaStage','csmaBurst','pkA','pkB','backoffBox','csmaCaption'].forEach(id => {
-    const n = document.getElementById(id);
-    if (n && n.parentNode) n.parentNode.removeChild(n);
-  });
-  Array.prototype.forEach.call(document.querySelectorAll('.sim-controls'), n => {
-    if (n.querySelector('#csmaPlay') || n.querySelector('#csmaReset')) {
-      if (n.parentNode) n.parentNode.removeChild(n);
-    }
-  });
-}
-
-function findMount() {
-  let root = document.getElementById('csmaRoot');
-  if (root) return root;
-
-  const stage = document.getElementById('csmaStage');
-  const host = stage ? (stage.closest('.sim-box') || stage.parentElement) : null;
-
-  legacyCleanup();   // elimina stage viejo, barras, caption y botones muertos
-
-  root = document.createElement('div');
-  root.id = 'csmaRoot';
-  root.style.cssText = 'display:block;height:auto;max-height:none;overflow:visible;position:static;';
-  (host || document.body).appendChild(root);
-  return root;
-}
-
+/* ── Montaje simple: solo usa el #csmaRoot del HTML ─────────────────────── */
 function initCsma(target) {
   try {
     ensureStyles();
-    const root = target || findMount();
-    if (root.__csmaUI) return root.__csmaUI;
+    const root = target || document.getElementById('csmaRoot');
+    if (!root) {
+      console.warn('[CSMA] No se encontró #csmaRoot. Añade <div id="csmaRoot"></div> en tu HTML.');
+      return null;
+    }
+    if (root.__csmaUI) return root.__csmaUI; // ya montado, no duplicar
     const ui = new CsmaUI(root);
     root.__csmaUI = ui;
     setTimeout(() => ui.resize(), 80);
@@ -994,6 +970,9 @@ if (document.readyState === 'loading') {
 }
 window.addEventListener('load', tryInit);
 
+global.initCsma = initCsma;
+global.CsmaSim = CsmaSim;
+})(window);
 global.initCsma = initCsma;
 global.CsmaSim = CsmaSim;
 })(window);
