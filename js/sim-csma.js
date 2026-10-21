@@ -990,6 +990,3 @@ window.addEventListener('load', tryAutoInit);
 window.initCsma = initCsma;
 window.CsmaSim = CsmaSim;
 })(window);
-global.initCsma = initCsma;
-global.CsmaSim = CsmaSim;
-})(window);
