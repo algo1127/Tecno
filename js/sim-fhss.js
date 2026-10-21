@@ -1,5 +1,5 @@
 /* ==========================================================================
-   sim-fhss.js · Bluetooth FHSS - Redesigned UI
+   sim-fhss.js · Bluetooth FHSS 
    ========================================================================== */
 (function (global) {
 'use strict';
@@ -281,17 +281,20 @@ class FhssSim {
 
   step() {
     this.hopIndex = (this.hopIndex + 1) % this.channels;
+
+    // FIX: re-sortear la interferencia ANTES de evaluar el salto,
+    // para que el resultado coincida con lo que se ve en pantalla.
+    if (this.hopIndex % 8 === 0) this.updateNoise();
+
     const ch = this.sequence[this.hopIndex];
     const isNoise = this.noiseChannels.has(ch);
-    
+
     this.stats.hops++;
     if (isNoise) {
       this.stats.collisions++;
     } else {
       this.stats.success++;
     }
-
-    if (this.hopIndex % 8 === 0) this.updateNoise();
 
     return { 
       ch, 
@@ -311,7 +314,7 @@ const TPL = `
   <header class="fhss__head">
     <div>
       <h2>Bluetooth FHSS · Saltos de Frecuencia</h2>
-      <p>El máster y slave saltan sincronizados por 32 canales a 1600 saltos/segundo para esquivar interferencias.</p>
+      <p>El máster y slave saltan sincronizados por 32 canales (en Bluetooth real: 1600 saltos/s; aquí ralentizado para poder verlo) para esquivar interferencias.</p>
     </div>
     <div class="fhss__transport">
       <button type="button" class="btn btn--primary" id="fhssPlay">▶ Iniciar</button>
@@ -334,7 +337,7 @@ const TPL = `
   <div class="fhss__spectrum">
     <div class="fhss__spectrum-title">
       <span>Espectro 2.4 GHz</span>
-      <span style="color:var(--bad)"> = Interferencia</span>
+      <span style="color:var(--bad)">⚡ = Interferencia</span>
     </div>
     <div class="fhss__grid" id="fhssGrid"></div>
   </div>
@@ -462,6 +465,7 @@ class FhssUI {
     this.el.link.className = 'fhss__link';
     this.el.tx.classList.remove('active');
     this.el.rx.classList.remove('active');
+    this.renderNoise();
     this.el.grid.querySelectorAll('.fhss__cell').forEach(c => c.classList.remove('active'));
     this.updateStats();
     this.updateReadout('Simulación reiniciada. Lista para saltar.', 'info');
@@ -479,6 +483,9 @@ class FhssUI {
   }
 
   animateHop(data) {
+    // FIX: repintar la interferencia en cada salto (puede haber cambiado)
+    this.renderNoise();
+
     this.el.grid.querySelectorAll('.fhss__cell').forEach(c => c.classList.remove('active'));
     
     const cell = this.el.grid.querySelector(`.fhss__cell[data-ch="${data.ch}"]`);
@@ -526,23 +533,14 @@ function initFhss(target) {
     const sim = ui.sim;
     const origStep = sim.step.bind(sim);
     sim.step = function() {
+      // Si el router ya quitó esta página del DOM, paramos el temporizador
+      if (!root.isConnected) { sim.stop(); return null; }
       const data = origStep();
       ui.animateHop(data);
       return data;
     };
     
     root.__fhssUI = ui;
-    setTimeout(() => {
-      if (ui.el.grid) {
-        const cells = ui.el.grid.querySelectorAll('.fhss__cell');
-        if (cells.length > 0) {
-          const cellWidth = cells[0].offsetWidth;
-          const gap = 8;
-          ui.el.grid.style.gridTemplateColumns = `repeat(auto-fill, minmax(${Math.max(60, cellWidth)}px, 1fr))`;
-        }
-      }
-    }, 100);
-    
     return ui;
   } catch (err) {
     console.error('[FHSS] ERROR:', err);
