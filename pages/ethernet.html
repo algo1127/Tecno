@@ -50,23 +50,7 @@
     <div class="sim-box">
       <h3>⚡ Simulación interactiva: CSMA/CD <small>· Carrier Sense Multiple Access with Collision Detection</small></h3>
       <p style="font-size:.9rem;color:#9fc6e4">Cuando un dispositivo quiere transmitir, <strong>escucha el medio</strong>. Si está libre, transmite. Si dos transmiten a la vez se produce una <strong>colisión</strong>: ambos detienen la transmisión, esperan un <strong>tiempo aleatorio</strong> (backoff binario) y reintentan.</p>
-      <div class="stage" id="csmaStage">
-        <div class="medium"></div>
-        <div class="node node-a"><span class="node-dot">A</span><small>Estación A</small></div>
-        <div class="node node-b"><span class="node-dot">B</span><small>Estación B</small></div>
-        <div class="packet pk-a" id="pkA">A</div>
-        <div class="packet pk-b" id="pkB">B</div>
-        <div class="burst" id="csmaBurst">💥</div>
-      </div>
-      <div class="backoff no-print" id="backoffBox" hidden>
-        <div class="bo-row"><label>Espera A</label><div class="bo-bar"><i id="boA"></i></div><b id="boAv">—</b></div>
-        <div class="bo-row"><label>Espera B</label><div class="bo-bar"><i id="boB"></i></div><b id="boBv">—</b></div>
-      </div>
-      <p class="caption" id="csmaCaption">Pulsa «Simular» para ver el ciclo completo: escucha → transmisión → colisión → backoff → retransmisión.</p>
-      <div class="sim-controls no-print">
-        <button class="btn btn-accent" id="csmaPlay">▶ Simular CSMA/CD</button>
-        <button class="btn btn-ghost" id="csmaReset" style="background:#123f6b;color:#dbe9f5;border-color:#1d5c8f">⟲ Reiniciar</button>
-      </div>
+      <div id="csmaRoot"></div>
     </div>
   </div>
 
