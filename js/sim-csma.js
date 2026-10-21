@@ -1,50 +1,51 @@
 /* ==========================================================================
-   sim-csma.js · Drop & Play — auto-diagnóstico
+   sim-csma.js · FINAL — drop & play, inmune al CSS heredado del sitio
    ========================================================================== */
 (function (global) {
 'use strict';
-
-console.log('[CSMA] Script cargado');
 
 const CSS_STYLES = `
 .csma {
   --bg: #0f1620; --panel: #16202c; --panel-2: #1d2a38; --line: #2a3a4d;
   --txt: #e6eef7; --muted: #93a6bb; --accent: #4f9dff; --ok: #3ddc97;
   --warn: #ffd23d; --bad: #ff5c5c;
+  --cv-line: #3d5166; --cv-muted: #93a6bb; --cv-panel: #16202c;
   color: var(--txt); background: var(--bg);
   font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   padding: 20px; border-radius: 14px; max-width: 1180px; margin: 0 auto;
 }
 @media (prefers-color-scheme: light) {
   .csma { --bg:#f5f8fc; --panel:#fff; --panel-2:#eef3f9; --line:#d6e0ec;
-          --txt:#152232; --muted:#5b6f86; }
+          --txt:#152232; --muted:#5b6f86;
+          --cv-line:#8fa6bd; --cv-muted:#5b6f86; --cv-panel:#ffffff; }
 }
 .csma *, .csma *::before, .csma *::after { box-sizing: border-box; }
 .csma__head { display:flex; flex-wrap:wrap; gap:12px; align-items:center;
               justify-content:space-between; margin-bottom:14px; }
-.csma__head h2 { margin:0; font-size:1.25rem; }
+.csma__head h2 { margin:0; font-size:1.25rem; color:var(--txt); }
 .csma__head p  { margin:2px 0 0; color:var(--muted); font-size:.85rem; }
 .csma__transport { display:flex; gap:8px; flex-wrap:wrap; }
-.btn {
+.csma .btn {
   appearance:none; border:1px solid var(--line); background:var(--panel-2);
   color:var(--txt); padding:8px 14px; border-radius:9px; cursor:pointer;
-  font:600 .88rem/1 inherit;
+  font:600 .88rem/1 inherit; position:static;
 }
-.btn:hover { border-color:var(--accent); }
-.btn--primary { background:var(--accent); border-color:var(--accent); color:#08131f; }
-.chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
-.chip {
+.csma .btn:hover { border-color:var(--accent); }
+.csma .btn--primary { background:var(--accent); border-color:var(--accent); color:#08131f; }
+.csma .chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.csma .chip {
   border:1px solid var(--line); background:transparent; color:var(--muted);
   padding:6px 13px; border-radius:999px; cursor:pointer; font:600 .82rem/1 inherit;
+  position:static;
 }
-.chip:hover { color:var(--txt); border-color:var(--accent); }
-.chip.is-active { background:var(--accent); border-color:var(--accent); color:#08131f; }
+.csma .chip:hover { color:var(--txt); border-color:var(--accent); }
 .csma__stage { position:relative; background:var(--panel); border:1px solid var(--line);
-               border-radius:12px; overflow:hidden; }
-.csma__canvas { display:block; width:100%; height:auto; }
+               border-radius:12px; overflow:hidden; height:auto; }
+.csma .csma__canvas { display:block; width:100%; border:0; position:relative;
+                      height:auto; max-width:none; opacity:1; visibility:visible; }
 .csma__caption {
   margin:0; padding:12px 16px; border-top:1px solid var(--line);
-  background:var(--panel-2); font-size:.93rem; min-height:3.2em;
+  background:var(--panel-2); font-size:.93rem; min-height:3.2em; color:var(--txt);
 }
 .csma__caption b { color:var(--accent); }
 .csma__caption[data-tone="ok"] b { color:var(--ok); }
@@ -54,56 +55,56 @@ const CSS_STYLES = `
                color:var(--muted); padding:5px 9px; border-radius:7px;
                background:color-mix(in srgb, var(--panel) 75%, transparent);
                border:1px solid var(--line); }
-.grid { display:grid; gap:14px; margin-top:14px;
+.csma .grid { display:grid; gap:14px; margin-top:14px;
         grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); }
-.panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
-.panel h3 { margin:0 0 10px; font-size:.78rem; text-transform:uppercase; color:var(--muted); }
-.ctl { margin-bottom:11px; }
-.ctl__row { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
-.ctl label { font-size:.84rem; color:var(--muted); }
-.ctl output { font:600 .82rem/1 monospace; color:var(--txt); }
-input[type=range] { width:100%; accent-color:var(--accent); margin-top:5px; }
-.seg { display:flex; gap:5px; margin-top:5px; }
-.seg button { flex:1; border:1px solid var(--line); background:var(--panel-2); color:var(--muted);
-              padding:5px 4px; border-radius:7px; cursor:pointer; font:600 .78rem/1 inherit; }
-.seg button[aria-pressed=true] { background:var(--accent); border-color:var(--accent); color:#08131f; }
-.switch { display:flex; align-items:center; gap:8px; font-size:.84rem; color:var(--muted); margin-top:9px; }
-.switch input { accent-color:var(--accent); width:16px; height:16px; }
-.facts { list-style:none; margin:0; padding:0; font-size:.82rem; }
-.facts li { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed var(--line); }
-.facts span:first-child { color:var(--muted); }
-.facts span:last-child { font-family:monospace; font-weight:600; }
-.health { margin-top:10px; display:grid; gap:6px; }
-.health div { font-size:.8rem; padding:6px 9px; border-radius:7px; background:var(--panel-2);
-              border-left:3px solid var(--ok); }
-.health div[data-bad] { border-left-color:var(--bad); }
-.stations { display:grid; gap:8px; }
-.stcard { display:grid; grid-template-columns:auto 1fr auto; gap:9px; align-items:center;
+.csma .panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+.csma .panel h3 { margin:0 0 10px; font-size:.78rem; text-transform:uppercase; color:var(--muted); }
+.csma .ctl { margin-bottom:11px; }
+.csma .ctl__row { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+.csma .ctl label { font-size:.84rem; color:var(--muted); }
+.csma .ctl output { font:600 .82rem/1 monospace; color:var(--txt); }
+.csma input[type=range] { width:100%; accent-color:var(--accent); margin-top:5px; }
+.csma .seg { display:flex; gap:5px; margin-top:5px; }
+.csma .seg button { flex:1; border:1px solid var(--line); background:var(--panel-2); color:var(--muted);
+              padding:5px 4px; border-radius:7px; cursor:pointer; font:600 .78rem/1 inherit; position:static; }
+.csma .seg button[aria-pressed=true] { background:var(--accent); border-color:var(--accent); color:#08131f; }
+.csma .switch { display:flex; align-items:center; gap:8px; font-size:.84rem; color:var(--muted); margin-top:9px; }
+.csma .switch input { accent-color:var(--accent); width:16px; height:16px; }
+.csma .facts { list-style:none; margin:0; padding:0; font-size:.82rem; }
+.csma .facts li { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed var(--line); }
+.csma .facts span:first-child { color:var(--muted); }
+.csma .facts span:last-child { font-family:monospace; font-weight:600; }
+.csma .health { margin-top:10px; display:grid; gap:6px; }
+.csma .health div { font-size:.8rem; padding:6px 9px; border-radius:7px; background:var(--panel-2);
+              border-left:3px solid var(--ok); color:var(--txt); }
+.csma .health div[data-bad] { border-left-color:var(--bad); }
+.csma .stations { display:grid; gap:8px; }
+.csma .stcard { display:grid; grid-template-columns:auto 1fr auto; gap:9px; align-items:center;
           background:var(--panel-2); border:1px solid var(--line); border-radius:9px; padding:8px 10px; }
-.stcard__led { width:11px; height:11px; border-radius:50%; background:#3a4a5c; }
-.stcard__name { font-weight:700; font-size:.85rem; }
-.stcard__state { font-size:.74rem; color:var(--muted); }
-.stcard__att { font:600 .72rem/1 monospace; color:var(--muted); }
-.stcard__bar { grid-column:1/-1; height:5px; border-radius:3px; background:var(--line); overflow:hidden; }
-.stcard__bar i { display:block; height:100%; width:0%; background:var(--warn); }
-.metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:9px; }
-.metric { background:var(--panel-2); border:1px solid var(--line); border-radius:9px; padding:8px 10px; }
-.metric b { display:block; font:700 1.15rem/1.1 monospace; }
-.metric span { font-size:.7rem; color:var(--muted); text-transform:uppercase; }
-.metric--bad b { color:var(--bad); } .metric--ok b { color:var(--ok); } .metric--warn b { color:var(--warn); }
-.log { list-style:none; margin:0; padding:0; max-height:190px; overflow:auto; font:12.5px/1.5 monospace; }
-.log li { padding:3px 0; border-bottom:1px solid var(--line); color:var(--muted); }
-.log li b { color:var(--txt); font-weight:600; }
-.log li[data-tone="bad"] { color:var(--bad); }
-.log li[data-tone="ok"] { color:var(--ok); }
-.log li[data-tone="warn"] { color:var(--warn); }
+.csma .stcard__led { width:11px; height:11px; border-radius:50%; background:#3a4a5c; }
+.csma .stcard__name { font-weight:700; font-size:.85rem; }
+.csma .stcard__state { font-size:.74rem; color:var(--muted); }
+.csma .stcard__att { font:600 .72rem/1 monospace; color:var(--muted); }
+.csma .stcard__bar { grid-column:1/-1; height:5px; border-radius:3px; background:var(--line); overflow:hidden; }
+.csma .stcard__bar i { display:block; height:100%; width:0%; background:var(--warn); }
+.csma .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:9px; }
+.csma .metric { background:var(--panel-2); border:1px solid var(--line); border-radius:9px; padding:8px 10px; }
+.csma .metric b { display:block; font:700 1.15rem/1.1 monospace; color:var(--txt); }
+.csma .metric span { font-size:.7rem; color:var(--muted); text-transform:uppercase; }
+.csma .metric--bad b { color:var(--bad); } .csma .metric--ok b { color:var(--ok); } .csma .metric--warn b { color:var(--warn); }
+.csma .log { list-style:none; margin:0; padding:0; max-height:190px; overflow:auto; font:12.5px/1.5 monospace; }
+.csma .log li { padding:3px 0; border-bottom:1px solid var(--line); color:var(--muted); }
+.csma .log li b { color:var(--txt); font-weight:600; }
+.csma .log li[data-tone="bad"] { color:var(--bad); }
+.csma .log li[data-tone="ok"] { color:var(--ok); }
+.csma .log li[data-tone="warn"] { color:var(--warn); }
 .csma__foot { margin-top:12px; font-size:.76rem; color:var(--muted); }
 .csma__foot kbd { background:var(--panel-2); border:1px solid var(--line); border-radius:4px; padding:1px 5px; }
 `;
 
 let stylesInjected = false;
 function ensureStyles() {
-    if (stylesInjected) return;
+    if (stylesInjected || document.getElementById('csma-sim-styles')) return;
     const s = document.createElement('style');
     s.id = 'csma-sim-styles';
     s.textContent = CSS_STYLES;
@@ -195,10 +196,7 @@ class CsmaSim {
   }
   armTraffic() {
     const lam=this.lambda();
-    for (const st of this.stations) {
-      const t=-Math.log(1-Math.random())/lam;
-      this.pq.push(t,'gen',{st});
-    }
+    for (const st of this.stations) this.pq.push(-Math.log(1-Math.random())/lam,'gen',{st});
   }
   lambda() { const n=Math.max(1,this.stations.length); return Math.max(1e-12,this.cfg.load/(n*Math.max(1e-9,this.frameUs))); }
   inject(st,dst,at) { this.pq.push(at===undefined?this.t:at,'inject',{st,dst}); }
@@ -253,8 +251,7 @@ class CsmaSim {
       } else { this.stats.dropped++; st.stats.dropped++; }
       if (!st.frame&&st.state==='idle') this.tryTransmit(st);
     }
-    const nxt=this.t+(-Math.log(1-Math.random())/this.lambda());
-    this.pq.push(nxt,'gen',{st});
+    this.pq.push(this.t+(-Math.log(1-Math.random())/this.lambda()),'gen',{st});
   }
   onTry(d) {
     const st=d.st;
@@ -399,7 +396,6 @@ function signalRegions(rec,t,v,L) {
   if (hh>th+1e-9) out.push([th,hh]);
   return out.length?out:null;
 }
-
 function stPolygon(rec,side,v,L,now) {
   const bound=side<0?0:L;
   const dist=Math.abs(bound-rec.x)/v;
@@ -412,7 +408,7 @@ function stPolygon(rec,side,v,L,now) {
     const tT=Math.min(tTail0+dist,now);
     pts.push([rec.x+side*v*(tT-tTail0),tT]);
     pts.push([rec.x,tTail0]);
-  } else { pts.push([rec.x,now]); }
+  } else pts.push([rec.x,now]);
   return pts;
 }
 
@@ -503,7 +499,6 @@ class CsmaUI {
     this.loadScenario('collision',true); this.resize();
     this.loop=this.loop.bind(this);
     this.raf=requestAnimationFrame(this.loop);
-    console.log('[CSMA] UI montada correctamente');
   }
   buildScenarios() {
     this.el.scenarios.innerHTML='';
@@ -569,9 +564,11 @@ class CsmaUI {
       else if (e.key==='p'||e.key==='P'){e.preventDefault();this.doStep();}
       else if (e.key==='r'||e.key==='R'){e.preventDefault();this.pause();this.restart();}
     });
+    global.addEventListener('resize',()=>this.resize());
     if (global.ResizeObserver){
       this.ro=new ResizeObserver(()=>this.resize());
-      this.ro.observe(el.canvas.parentElement);
+      this.ro.observe(this.el.canvas.parentElement);
+      this.ro.observe(this.root);
     }
   }
   setCfg(p,o){
@@ -598,6 +595,8 @@ class CsmaUI {
     el.oRate.value=c.rateMbps+' Mb/s';
   }
   restart(){
+    this.sim.reset();
+    this.buildStationCards();
     SCENARIOS[this.scenario].setup(this.sim);
     this.narr={backoffs:[],txCount:0,done:false};
     this.el.log.innerHTML='';
@@ -607,9 +606,9 @@ class CsmaUI {
   }
   introCaption(){
     const s=this.sim;
-    if (this.scenario==='free') return '<b>TRÁFICO LIBRE</b> · '+s.stations.length+' estaciones Poisson.';
-    if (this.scenario==='late') return '<b>COLISIÓN TARDÍA</b> · Trama ('+fmtUs(s.frameUs)+') < RTT ('+fmtUs(s.rttUs)+').';
-    return '<b>CARRIER SENSE</b> · A y B escuchan: medio libre. Pulsa «Simular».';
+    if (this.scenario==='free') return '<b>TRÁFICO LIBRE</b> · '+s.stations.length+' estaciones generan tramas (Poisson, ρ='+s.cfg.load.toFixed(2)+').';
+    if (this.scenario==='late') return '<b>COLISIÓN TARDÍA</b> · La trama ('+fmtUs(s.frameUs)+') dura menos que el RTT ('+fmtUs(s.rttUs)+'): el emisor no detectará el choque.';
+    return '<b>CARRIER SENSE</b> · A y B escuchan el medio: libre. Pulsa «Simular» (o «Paso» evento a evento).';
   }
   play(){this.running=true;this.el.play.textContent='⏸ Pausa';}
   pause(){this.running=false;this.el.play.textContent='▶ Simular';}
@@ -620,56 +619,62 @@ class CsmaUI {
     switch(type){
       case 'tx':{
         const st=d.st,rec=d.rec;
-        if (rec.kind==='jam') this.log('<b>'+st.name+'</b> emite JAM','bad');
+        if (rec.kind==='jam') this.log('<b>'+st.name+'</b> emite JAM (48 b)','bad');
         else {
           this.narr.txCount++;
-          this.log('t='+fmtUs(rec.t0)+' · <b>'+st.name+'</b> tx '+(st.attempts+1),'info');
+          this.log('t='+fmtUs(rec.t0)+' · <b>'+st.name+'</b> transmite '+rec.bytes+' B (intento '+(st.attempts+1)+')','info');
           if (guided&&this.narr.txCount===1)
-            this.setCaption('<b>MULTIPLE ACCESS</b> · Señales avanzan a 2×10⁸ m/s, tardan '+fmtUs(s.propUs)+'.','info');
+            this.setCaption('<b>MULTIPLE ACCESS</b> · Ambas transmiten a la vez; las señales tardan '+fmtUs(s.propUs)+' en cruzarse.','info');
+          else if (guided&&this.narr.done)
+            this.setCaption('<b>RETRANSMISIÓN</b> · '+st.name+' ganó el medio y reenvía; la otra estación espera (defer).','info');
         }
         break;
       }
       case 'collision':{
         const pct=Math.round(100*d.x/s.cfg.cableLen);
-        this.log('💥 COLISIÓN en '+pct+'%','bad');
+        this.log('t='+fmtUs(d.t)+' · 💥 COLISIÓN detectada por <b>'+d.st.name+'</b> en el '+pct+'%','bad');
         if (guided&&!this.narr.collided){
           this.narr.collided=true;
-          this.setCaption('<b>COLLISION</b> · '+d.st.name+' detecta a '+d.other.name+'. JAM emitido.','bad');
-        }
+          this.setCaption('<b>COLLISION DETECTION</b> · '+d.st.name+' recibe a '+d.other.name+' mientras transmite → JAM y aborto de trama.','bad');
+        } else if (!guided)
+          this.setCaption('💥 Colisión · '+s.stats.collisions+' acumuladas · eficiencia '+this.efficiency()+'%','bad');
         break;
       }
       case 'backoff':{
         const st=d.st;
-        this.log('⏳ '+st.name+' backoff k='+d.k,'warn');
+        this.log('t='+fmtUs(s.t)+' · ⏳ <b>'+st.name+'</b> backoff n='+d.n+', k='+d.k+' → '+fmtUs(d.k*s.slotUs),'warn');
         if (guided){
           this.narr.backoffs.push({name:st.name,k:d.k});
           if (this.narr.backoffs.length>=2&&!this.narr.boShown){
             this.narr.boShown=true;
             const w=this.narr.backoffs.slice().sort((a,b)=>a.k-b.k)[0];
-            this.setCaption('<b>BACKOFF</b> · Gana <b>'+w.name+'</b> (k menor).','warn');
+            this.setCaption('<b>BACKOFF BINARIO</b> · k aleatorio en [0, 2ⁿ−1]. Gana <b>'+w.name+'</b> (k='+w.k+'). Repite y verás otro resultado.','warn');
           }
         }
         break;
       }
       case 'deliver':{
-        this.log('✅ '+d.rec.src.name+' → '+d.st.name,'ok');
+        this.log('t='+fmtUs(s.t)+' · ✅ '+d.rec.src.name+' → '+d.st.name+' entregada','ok');
         if (guided&&!this.narr.done){
           this.narr.done=true;
-          this.setCaption('<b>✔ FIN</b> · Ethernet: escuchar, detectar, JAM, backoff, reintentar.','ok');
+          this.setCaption('<b>✔ FIN</b> · Escuchar → transmitir → detectar → JAM → backoff → reintentar. Así es Ethernet.','ok');
           this.pause();
-        }
+        } else if (!guided)
+          this.setCaption('✅ Entrega · eficiencia <b>'+this.efficiency()+'%</b> · '+s.stats.ok+' OK / '+s.stats.collisions+' colisiones','ok');
         break;
       }
       case 'late':{
-        this.log('⚠️ COLISIÓN TARDÍA','bad');
+        this.log('t='+fmtUs(s.t)+' · ⚠️ COLISIÓN TARDÍA: '+d.rec.src.name+' no la detecta','bad');
         if (guided&&!this.narr.lateShown){
           this.narr.lateShown=true;
-          this.setCaption('<b>COLISIÓN TARDÍA</b> · '+d.rec.src.name+' no la detecta. Trama perdida.','bad');
+          this.setCaption('<b>⚠ COLISIÓN TARDÍA</b> · '+d.rec.src.name+' terminó antes de oír el choque: cree que tuvo éxito y <b>no retransmitirá</b>. Por eso 802.3 exige trama ≥ 64 B y RTT ≤ slot time.','bad');
           this.pause();
-        }
+        } else if (!guided)
+          this.setCaption('⚠️ Colisión tardía · trama perdida sin retransmisión','bad');
         break;
       }
-      case 'drop': this.log('🗑 '+d.st.name+' descartó tras '+MAX_TRY+' intentos','bad'); break;
+      case 'drop': this.log('🗑 <b>'+d.st.name+'</b> descartó tras '+MAX_TRY+' intentos','bad'); break;
+      case 'frame': this.log('t='+fmtUs(s.t)+' · '+d.st.name+' genera trama (cola '+d.st.queue.length+')','info'); break;
     }
   }
   log(html,tone){
@@ -687,14 +692,14 @@ class CsmaUI {
   }
   updateFacts(){
     const s=this.sim;
-    const rows=[['Bit',fmtUs(s.bitUs)],['Slot (512b)',fmtUs(s.slotUs)],
-      ['Propag.',fmtUs(s.propUs)],['RTT',fmtUs(s.rttUs)],
-      ['Trama',fmtUs(s.frameUs)],['Jam/IFG',fmtUs(s.jamUs)+'/'+fmtUs(s.ifgUs)]];
+    const rows=[['Bit',fmtUs(s.bitUs)],['Slot (512 b)',fmtUs(s.slotUs)],
+      ['Propagación',fmtUs(s.propUs)],['RTT',fmtUs(s.rttUs)],
+      ['Trama',fmtUs(s.frameUs)],['Jam / IFG',fmtUs(s.jamUs)+' / '+fmtUs(s.ifgUs)]];
     this.el.facts.innerHTML=rows.map(r=>'<li><span>'+r[0]+'</span><span>'+r[1]+'</span></li>').join('');
     const c=s.checks,out=[];
-    out.push(c.bigNet?'<div data-bad>⚠ RTT &gt; slot: red demasiado grande.</div>':'<div>✅ RTT ≤ slot.</div>');
-    out.push(c.lateRisk?'<div data-bad>⚠ Trama &lt; RTT: colisiones tardías.</div>':'<div>✅ Trama ≥ RTT.</div>');
-    out.push(c.shortFrame?'<div data-bad>⚠ Trama &lt; 64 B.</div>':'<div>✅ Tamaño OK.</div>');
+    out.push(c.bigNet?'<div data-bad>⚠ RTT ('+fmtUs(s.rttUs)+') &gt; slot time: red demasiado grande.</div>':'<div>✅ RTT ≤ slot time ('+fmtUs(s.slotUs)+').</div>');
+    out.push(c.lateRisk?'<div data-bad>⚠ Trama ('+fmtUs(s.frameUs)+') &lt; RTT: habrá colisiones tardías.</div>':'<div>✅ Trama ≥ RTT: toda colisión se detecta.</div>');
+    out.push(c.shortFrame?'<div data-bad>⚠ '+s.cfg.frameBytes+' B &lt; mínimo 64 B.</div>':'<div>✅ Tamaño dentro de 64–1518 B.</div>');
     this.el.health.innerHTML=out.join('');
   }
   updateDom(force){
@@ -706,12 +711,12 @@ class CsmaUI {
     for (let i=0;i<this.cards.length&&i<s.stations.length;i++){
       const c=this.cards[i],st=s.stations[i];
       c.root.dataset.state=st.state;
-      const names={idle:'inactiva',defer:'escuchando',tx:'tx',jam:'JAM',backoff:'backoff'};
+      const names={idle:'inactiva',defer:'escuchando',tx:'transmitiendo',jam:'JAM·colisión',backoff:'backoff'};
       let extra='';
       if (st.backoff){
         const pct=clamp(100*(1-(st.backoff.end-s.t)/Math.max(1e-9,st.backoff.end-st.backoff.start)),0,100);
         c.bar.style.width=pct+'%';
-        extra=' k='+st.backoff.k;
+        extra=' · k='+st.backoff.k;
       } else c.bar.style.width='0%';
       c.state.textContent=' · '+(names[st.state]||st.state)+extra;
       c.att.textContent='int.'+st.attempts+' · OK'+st.stats.ok;
@@ -734,13 +739,17 @@ class CsmaUI {
     this.draw(ts); this.updateDom(false);
   }
   resize(){
-    const c=this.el.canvas,p=c.parentElement;
-    const w=Math.max(320,p.clientWidth);
+    const c=this.el.canvas;
+    let w=0;
+    if (c.parentElement) w=c.parentElement.clientWidth;
+    if (!w||w<60) w=this.root.clientWidth||0;
+    if (!w||w<60) w=Math.max(320,(global.innerWidth||800)-80);
     const h=this.sim.cfg.spacetime?430:210;
     this.dpr=Math.min(global.devicePixelRatio||1,2);
     c.width=Math.round(w*this.dpr);
     c.height=Math.round(h*this.dpr);
     c.style.height=h+'px';
+    c.style.width='100%';
     this.w=w; this.h=h;
     this.ctx.setTransform(this.dpr,0,0,this.dpr,0,0);
     const pad=Math.min(46,w*0.06);
@@ -749,15 +758,16 @@ class CsmaUI {
   }
   draw(ts){
     const c=this.ctx,s=this.sim,g=this.geom;
-    if (!g) return;
+    if (!g||!this.w) return;
     const css=getComputedStyle(this.el.app);
+    const gv=n=>css.getPropertyValue(n).trim();
     const COL={
-      txt:css.getPropertyValue('--txt').trim()||'#e6eef7',
-      muted:css.getPropertyValue('--muted').trim()||'#93a6bb',
-      line:css.getPropertyValue('--line').trim()||'#2a3a4d',
-      panel:css.getPropertyValue('--panel').trim()||'#16202c',
-      bad:css.getPropertyValue('--bad').trim()||'#ff5c5c',
-      ok:css.getPropertyValue('--ok').trim()||'#3ddc97'
+      txt:gv('--txt')||'#e6eef7',
+      muted:gv('--cv-muted')||gv('--muted')||'#93a6bb',
+      line:gv('--cv-line')||'#3d5166',
+      panel:gv('--cv-panel')||'#16202c',
+      bad:gv('--bad')||'#ff5c5c',
+      ok:gv('--ok')||'#3ddc97'
     };
     const L=Math.max(1,s.cfg.cableLen);
     const X=m=>g.x0+(m/L)*(g.x1-g.x0);
@@ -769,7 +779,7 @@ class CsmaUI {
     c.strokeStyle=COL.muted; c.lineWidth=1;
     for (let i=0;i<=10;i++){
       const x=g.x0+(g.x1-g.x0)*i/10;
-      c.globalAlpha=0.25;
+      c.globalAlpha=0.35;
       c.beginPath(); c.moveTo(x,cy-4); c.lineTo(x,cy+4); c.stroke();
     }
     c.globalAlpha=1;
@@ -786,7 +796,7 @@ class CsmaUI {
     for (const a of active){
       const col=a.rec.kind==='jam'?COL.bad:a.rec.src.color;
       c.strokeStyle=col; c.lineWidth=a.rec.kind==='jam'?11:9;
-      c.globalAlpha=a.rec.kind==='jam'?0.95:0.7;
+      c.globalAlpha=a.rec.kind==='jam'?0.95:0.75;
       for (const r of a.regs){
         c.beginPath(); c.moveTo(X(r[0]),cy); c.lineTo(X(r[1]),cy); c.stroke();
       }
@@ -843,11 +853,14 @@ class CsmaUI {
         c.fillStyle='#ffd23d'; this.roundRect(bx,bY,Math.max(2,bw*pct),6,3); c.fill();
         c.fillStyle=COL.muted; c.font='10px monospace';
         c.fillText('k='+st.backoff.k,x,bY+20);
-      } else if (st.state==='tx'){
-        const pct=st.tx?clamp((s.t-st.tx.t0)/Math.max(1e-9,st.tx.dur),0,1):0;
+      } else if (st.state==='tx'&&st.tx){
+        const pct=clamp((s.t-st.tx.t0)/Math.max(1e-9,st.tx.dur),0,1);
         const bw=44,bx=x-bw/2,bY=cy+40;
         c.fillStyle=COL.line; this.roundRect(bx,bY,bw,6,3); c.fill();
         c.fillStyle=st.color; this.roundRect(bx,bY,Math.max(2,bw*pct),6,3); c.fill();
+      } else {
+        c.fillStyle=COL.muted; c.font='10px system-ui';
+        c.fillText('int. '+st.attempts,x,cy+52);
       }
     }
     if (g.st&&s.cfg.spacetime) this.drawSpacetime(c,s,g.st,L,COL);
@@ -857,7 +870,7 @@ class CsmaUI {
     const SX=m=>p.x+(m/L)*p.w;
     const SY=t=>p.y+((t-tMin)/T)*p.h;
     c.save();
-    c.fillStyle='rgba(127,127,127,0.06)';
+    c.fillStyle='rgba(127,127,127,0.08)';
     this.roundRect(p.x,p.y,p.w,p.h,8); c.fill();
     c.strokeStyle=COL.line; c.lineWidth=1; c.stroke();
     c.clip();
@@ -874,9 +887,9 @@ class CsmaUI {
     c.textAlign='center';
     for (const st of s.stations){
       const x=SX(st.pos);
-      c.strokeStyle=st.color; c.globalAlpha=0.35; c.setLineDash([2,4]);
+      c.strokeStyle=st.color; c.globalAlpha=0.4; c.setLineDash([2,4]);
       c.beginPath(); c.moveTo(x,p.y); c.lineTo(x,p.y+p.h); c.stroke();
-      c.setLineDash([]); c.globalAlpha=0.9; c.fillStyle=st.color;
+      c.setLineDash([]); c.globalAlpha=0.95; c.fillStyle=st.color;
       c.font='700 10px system-ui';
       c.fillText(st.name,x,p.y+11);
     }
@@ -887,11 +900,11 @@ class CsmaUI {
       for (const side of [-1,1]){
         const poly=stPolygon(rec,side,s.vUs,L,now);
         if (!poly) continue;
-        c.globalAlpha=rec.kind==='jam'?0.45:0.26;
+        c.globalAlpha=rec.kind==='jam'?0.45:0.28;
         c.beginPath();
         poly.forEach((pt,i)=>{const X=SX(pt[0]),Y=SY(pt[1]);i?c.lineTo(X,Y):c.moveTo(X,Y);});
         c.closePath(); c.fill();
-        c.globalAlpha=0.75; c.lineWidth=1.2; c.stroke();
+        c.globalAlpha=0.8; c.lineWidth=1.2; c.stroke();
       }
     }
     for (const sp of s.sparks){
@@ -906,7 +919,7 @@ class CsmaUI {
     c.restore();
     c.globalAlpha=1;
     c.fillStyle=COL.muted; c.font='10px system-ui'; c.textAlign='left';
-    c.fillText('Espacio-tiempo · ventana '+fmtUs(T),p.x,p.y-6);
+    c.fillText('Diagrama espacio-tiempo · ventana '+fmtUs(T),p.x,p.y-6);
   }
   roundRect(x,y,w,h,r){
     const c=this.ctx;
@@ -922,49 +935,64 @@ class CsmaUI {
   destroy(){cancelAnimationFrame(this.raf);if(this.ro)this.ro.disconnect();}
 }
 
-function initCsma(target){
-  try {
-    console.log('[CSMA] initCsma() llamada');
-    ensureStyles();
-    let root=target;
-    if (!root) root=document.getElementById('csmaStage')||document.getElementById('csmaRoot');
-    if (!root){
-      root=document.createElement('div');
-      root.id='csmaRoot';
-      document.body.appendChild(root);
+/* ── MONTAJE: esquiva el CSS heredado (.stage con altura fija/overflow) ──── */
+function legacyCleanup() {
+  ['csmaStage','csmaBurst','pkA','pkB','backoffBox','csmaCaption'].forEach(id => {
+    const n = document.getElementById(id);
+    if (n && n.parentNode) n.parentNode.removeChild(n);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.sim-controls'), n => {
+    if (n.querySelector('#csmaPlay') || n.querySelector('#csmaReset')) {
+      if (n.parentNode) n.parentNode.removeChild(n);
     }
-    if (root.__csmaUI){console.log('[CSMA] Ya inicializada');return root.__csmaUI;}
-    console.log('[CSMA] Montando UI en:',root);
-    const ui=new CsmaUI(root);
-    root.__csmaUI=ui;
-    console.log('[CSMA] ✅ Simulación lista');
+  });
+}
+
+function findMount() {
+  let root = document.getElementById('csmaRoot');
+  if (root) return root;
+
+  const stage = document.getElementById('csmaStage');
+  const host = stage ? (stage.closest('.sim-box') || stage.parentElement) : null;
+
+  legacyCleanup();   // elimina stage viejo, barras, caption y botones muertos
+
+  root = document.createElement('div');
+  root.id = 'csmaRoot';
+  root.style.cssText = 'display:block;height:auto;max-height:none;overflow:visible;position:static;';
+  (host || document.body).appendChild(root);
+  return root;
+}
+
+function initCsma(target) {
+  try {
+    ensureStyles();
+    const root = target || findMount();
+    if (root.__csmaUI) return root.__csmaUI;
+    const ui = new CsmaUI(root);
+    root.__csmaUI = ui;
+    setTimeout(() => ui.resize(), 80);
+    setTimeout(() => ui.resize(), 500);
     return ui;
   } catch (err) {
-    console.error('[CSMA] ERROR:',err);
-    const box=document.createElement('div');
-    box.style.cssText='padding:20px;background:#ff5c5c;color:white;font-family:monospace';
-    box.textContent='CSMA Error: '+err.message;
-    document.body.appendChild(box);
+    console.error('[CSMA] ERROR:', err);
   }
 }
 
-function tryInit(){
+function tryInit() {
   if (global.__csmaInit) return;
   if (!document.body) return;
-  global.__csmaInit=true;
-  console.log('[CSMA] Auto-init disparado');
+  global.__csmaInit = true;
   initCsma();
 }
 
-// Múltiples intentos de inicialización
-if (document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',tryInit);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', tryInit);
 } else {
   tryInit();
 }
-window.addEventListener('load',tryInit);
+window.addEventListener('load', tryInit);
 
-global.initCsma=initCsma;
-global.CsmaSim=CsmaSim;
-console.log('[CSMA] Fin de script');
+global.initCsma = initCsma;
+global.CsmaSim = CsmaSim;
 })(window);
