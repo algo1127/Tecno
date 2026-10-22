@@ -193,105 +193,16 @@ footer a:hover{text-decoration:underline}
 }
 
 
-/* ==========================================================================
-   ICONOS SVG (MÉTODO MÁSCARA CSS)
-   Permite colorear archivos .svg externos directamente con variables CSS
-   sin usar filtros ni inyectar código SVG en el HTML.
-   ========================================================================== */
-
-.icon {
-  display: inline-block;
-  width: 1.15em;
-  height: 1.15em;
-  vertical-align: -0.22em;
-  margin-right: 0.4em;
-  
-  /* La magia: usamos el SVG como plantilla y pintamos el fondo */
-  background-color: currentColor;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  
-  transition: background-color 0.25s ease;
+/* ---------- ICONOS SVG ---------- */
+.icon{
+  width:1.15em;
+  height:1.15em;
+  display:inline-block;
+  vertical-align:-0.22em;
+  margin-right:.4em;
 }
-
-/* --- Asignación de rutas y colores por clase --- */
-
-.icon-check { 
-  -webkit-mask-image: url('../assets/icons/icon-check.svg');
-  mask-image: url('../assets/icons/icon-check.svg');
-  color: var(--ok); 
-}
-
-.icon-warning { 
-  -webkit-mask-image: url('../assets/icons/icon-warning.svg');
-  mask-image: url('../assets/icons/icon-warning.svg');
-  color: #c62828; /* Dark Red */
-}
-
-.icon-bolt { 
-  -webkit-mask-image: url('../assets/icons/icon-bolt.svg');
-  mask-image: url('../assets/icons/icon-bolt.svg');
-  color: #ff9800; /* Vibrant Orange/Yellow */
-}
-
-.icon-antenna, .icon-wifi { 
-  -webkit-mask-image: url('../assets/icons/icon-antenna.svg');
-  mask-image: url('../assets/icons/icon-antenna.svg');
-  color: #ffffff; /* Pure White for dark backgrounds */
-}
-
-.icon-mobile { 
-  -webkit-mask-image: url('../assets/icons/icon-mobile.svg');
-  mask-image: url('../assets/icons/icon-mobile.svg');
-  color: var(--bt); 
-}
-
-.icon-versus { 
-  -webkit-mask-image: url('../assets/icons/icon-versus.svg');
-  mask-image: url('../assets/icons/icon-versus.svg');
-  color: var(--azul-med); 
-}
-
-/* Iconos genéricos (ajusta las rutas según tus archivos reales) */
-.icon-puzzle { 
-  -webkit-mask-image: url('../assets/icons/icon-puzzle.svg');
-  mask-image: url('../assets/icons/icon-puzzle.svg');
-  color: var(--azul-med); 
-}
-.icon-folder { 
-  -webkit-mask-image: url('../assets/icons/icon-folder.svg');
-  mask-image: url('../assets/icons/icon-folder.svg');
-  color: var(--azul-med); 
-}
-.icon-video { 
-  -webkit-mask-image: url('../assets/icons/icon-video.svg');
-  mask-image: url('../assets/icons/icon-video.svg');
-  color: var(--azul-med); 
-}
-.icon-ethernet { 
-  -webkit-mask-image: url('../assets/icons/icon-ethernet.svg');
-  mask-image: url('../assets/icons/icon-ethernet.svg');
-  color: var(--azul-med); 
-}
-.icon-bluetooth { 
-  -webkit-mask-image: url('../assets/icons/icon-bluetooth.svg');
-  mask-image: url('../assets/icons/icon-bluetooth.svg');
-  color: var(--azul-med); 
-}
-
-/* Iconos dentro de chips de colores (forzar blanco para contraste) */
-.icon-chip .icon {
-  width: 26px;
-  height: 26px;
-  margin-right: 0;
-  color: #ffffff !important;
-}
-
-/* Efecto hover global para enlaces */
-a:hover .icon {
-  color: var(--naranja);
+.icon-chip .icon{
+  width:26px;
+  height:26px;
+  margin-right:0;
 }
